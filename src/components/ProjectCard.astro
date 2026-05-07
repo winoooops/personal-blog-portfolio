@@ -1,4 +1,6 @@
 ---
+import type { RepoStats } from '../lib/github';
+
 interface Props {
   project: {
     title: string;
@@ -7,9 +9,23 @@ interface Props {
     stack: readonly string[];
     href: string;
   };
+  live?: RepoStats;
 }
 
-const { project } = Astro.props;
+const { project, live } = Astro.props;
+
+function relativeTime(isoDate: string): string {
+  const then = new Date(isoDate).getTime();
+  const now = Date.now();
+  const diff = now - then;
+  const day = 24 * 60 * 60 * 1000;
+  const days = Math.floor(diff / day);
+  if (days < 1) return 'updated today';
+  if (days < 7) return `updated ${days}d ago`;
+  if (days < 30) return `updated ${Math.floor(days / 7)}w ago`;
+  if (days < 365) return `updated ${Math.floor(days / 30)}mo ago`;
+  return `updated ${Math.floor(days / 365)}y ago`;
+}
 ---
 
 <article class="project-card">
@@ -18,6 +34,13 @@ const { project } = Astro.props;
     <span>{project.status}</span>
   </div>
   <p>{project.summary}</p>
+  {live && (
+    <div class="project-meta" aria-label={`Live stats for ${project.title}`}>
+      <span>★ {live.stars}</span>
+      <span>{relativeTime(live.lastCommit)}</span>
+      {live.language && <span>{live.language}</span>}
+    </div>
+  )}
   <ul class="tag-list" aria-label={`Stack for ${project.title}`}>
     {project.stack.map((item) => <li>{item}</li>)}
   </ul>

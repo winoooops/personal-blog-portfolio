@@ -20,7 +20,21 @@ Use TypeScript-aware Astro patterns and keep the strict Astro `tsconfig` intact.
 
 ## Testing Guidelines
 
-No dedicated test framework is configured yet. Treat `npm run build` as the required validation step before committing because it checks Astro compilation and content frontmatter. For blog posts, verify `title`, `description`, `pubDate`, optional `updatedDate`, `tags`, `draft`, and `source` against `src/content.config.ts`.
+No dedicated test framework is configured. Treat `npm run build` as the required validation step before committing because it checks Astro compilation, content frontmatter, and the build-time GitHub fetch. For blog posts, verify `title`, `description`, `pubDate`, optional `updatedDate`, `tags`, `draft`, and `source` against `src/content.config.ts`.
+
+`src/lib/github.ts` runs during every build and writes `.cache/github.json` (gitignored). API failures log warnings but never fail the build — un-augmented project cards are the graceful-degradation path.
+
+## Environment Variables
+
+The build reads these from process env. All are optional; missing values disable the corresponding feature without breaking the build. See `.env.example` for the full list.
+
+| Var | Purpose |
+| --- | --- |
+| `PUBLIC_SITE_URL` | Site origin (used for absolute URLs and OG meta). |
+| `PUBLIC_BASE_PATH` | Pages subpath when deploying to `<user>.github.io/<repo>`. |
+| `PUBLIC_WEB3FORMS_KEY` | Contact form delivery key. Public-by-design. |
+| `PUBLIC_GISCUS_REPO` / `PUBLIC_GISCUS_REPO_ID` / `PUBLIC_GISCUS_CATEGORY` / `PUBLIC_GISCUS_CATEGORY_ID` | giscus configuration. All four required to enable comments. |
+| `GITHUB_TOKEN` | Optional — bumps unauth GitHub API limit during local builds. CI provides this automatically via `secrets.GITHUB_TOKEN`. |
 
 ## Commit & Pull Request Guidelines
 

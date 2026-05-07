@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Giscus from '../../components/Giscus.astro';
 import { withBase } from '../../lib/paths';
 
 export async function getStaticPaths() {
@@ -40,5 +41,9 @@ const formattedDate = post.data.pubDate.toLocaleDateString('en', {
     <div class="prose">
       <Content />
     </div>
+    <aside class="comments" aria-labelledby="comments-title">
+      <h2 id="comments-title">Comments</h2>
+      <Giscus />
+    </aside>
   </article>
 </BaseLayout>

@@ -14,9 +14,14 @@ pnpm-debug.log*
 
 
 # environment variables
+# (PUBLIC_* vars for dev; production reads from GitHub Actions)
 .env
+.env.local
 .env.production
 obsidian.config.json
+
+# Build-time caches
+.cache/
 
 # macOS-specific files
 .DS_Store

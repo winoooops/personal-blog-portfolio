@@ -5,6 +5,8 @@ export const profile = {
   intro:
     'I build LLM tools, RAG workflows, orchestration graphs, and AI-in-the-loop systems with TypeScript, Node.js, Python, Rust, and pragmatic AWS architecture.',
   availability: 'Shipping clean, observable systems with strong types, small interfaces, telemetry, and security from day one.',
+  contactBlurb:
+    'Best for collaboration on agentic AI tooling, full-stack work, and developer-experience projects. Replies usually within a few days.',
   links: [
     { label: 'GitHub', href: 'https://github.com/winoooops' },
     { label: 'LinkedIn', href: 'https://linkedin.com/in/wei-wangcspractitioner' },

@@ -1,0 +1,23 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/paths';
+---
+
+<BaseLayout title="Thanks" description="Your message has been received.">
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Contact</p>
+      <h1>Thanks — message received</h1>
+      <p>I'll reply soon. In the meantime, you can keep reading.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <p>
+        <a class="button primary" href={withBase('/blog/')}>Read the blog</a>
+        <a class="button secondary" href={withBase('/')}>Home</a>
+      </p>
+    </div>
+  </section>
+</BaseLayout>

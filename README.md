@@ -81,6 +81,58 @@ The sync script supports common Obsidian syntax:
 - `[[Other Note|custom label]]` keeps the label.
 - `![[image.png]]` copies the asset into `public/obsidian-assets`.
 
+## Dynamic Features Setup
+
+This site has three dynamic features that read configuration from environment variables. All are optional — if a variable is missing, the corresponding feature degrades silently.
+
+### Live GitHub project data
+
+Project cards on the home page show stars, last-commit recency, and primary language pulled from the GitHub REST API at build time.
+
+- No setup required. The build runs unauthenticated unless `GITHUB_TOKEN` is set.
+- The 60 req/hr unauthenticated limit is enough for the current project list. CI uses the auto-provided `GITHUB_TOKEN`, which raises the limit to 5000/hr.
+- Build-time results are cached in `.cache/github.json` for one hour to keep `npm run dev` fast. The cache directory is gitignored.
+
+### Contact form (Web3Forms)
+
+The `/contact/` page posts to [Web3Forms](https://web3forms.com), which forwards messages to your email.
+
+1. Visit https://web3forms.com and submit your email — they reply with an access key. No account required.
+2. Add the key to `.env`:
+
+   ```sh
+   PUBLIC_WEB3FORMS_KEY=your-access-key
+   ```
+
+3. For production, set `PUBLIC_WEB3FORMS_KEY` as a repository **variable** (not secret — Web3Forms keys are designed to ship publicly).
+
+If the key is missing, the form renders with a disabled submit button.
+
+### Comments (giscus)
+
+Each blog post has a giscus-powered comments widget backed by GitHub Discussions.
+
+1. Make this repository public.
+2. Settings → Features → enable **Discussions**.
+3. Create a Discussion category named **Comments** of type **Announcement**.
+4. Install the giscus app on the repository: https://github.com/apps/giscus
+5. Visit https://giscus.app, enter the repo and category, copy the four IDs into `.env`:
+
+   ```sh
+   PUBLIC_GISCUS_REPO=username/personal-blog-portfolio
+   PUBLIC_GISCUS_REPO_ID=...
+   PUBLIC_GISCUS_CATEGORY=Comments
+   PUBLIC_GISCUS_CATEGORY_ID=...
+   ```
+
+6. Set the same four as repository **variables** for production.
+
+If any are missing, the comments block is replaced by a single line noting comments are disabled in this build.
+
+### Environment variable summary
+
+See `.env.example` for the full list. None of the `PUBLIC_*` values are secrets — security models for both Web3Forms and giscus rely on origin allowlists.
+
 ## GitHub Management and Deployment
 
 This project is ready to manage in GitHub:

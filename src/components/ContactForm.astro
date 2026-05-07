@@ -1,0 +1,95 @@
+---
+const accessKey = import.meta.env.PUBLIC_WEB3FORMS_KEY ?? '';
+const successUrl = `${import.meta.env.BASE_URL ?? '/'}contact-success/`.replace(/\/+/g, '/');
+const enabled = Boolean(accessKey);
+---
+
+<form
+  class="contact-form"
+  action="https://api.web3forms.com/submit"
+  method="POST"
+  data-enabled={enabled ? 'true' : 'false'}
+>
+  <input type="hidden" name="access_key" value={accessKey} />
+  <input type="hidden" name="redirect" value={successUrl} />
+  <input type="hidden" name="from_name" value="personal-blog-portfolio contact form" />
+  <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" />
+  <input type="text" name="_honey" class="hp" tabindex="-1" autocomplete="off" />
+
+  <label>
+    <span>Name</span>
+    <input type="text" name="name" required maxlength="80" autocomplete="name" />
+    <em data-error="name"></em>
+  </label>
+
+  <label>
+    <span>Email</span>
+    <input type="email" name="email" required autocomplete="email" />
+    <em data-error="email"></em>
+  </label>
+
+  <label>
+    <span>Subject <small>(optional)</small></span>
+    <input type="text" name="subject" maxlength="120" />
+  </label>
+
+  <label>
+    <span>Message</span>
+    <textarea name="message" required rows="6" maxlength="2000"></textarea>
+    <em data-error="message"></em>
+  </label>
+
+  <p class="contact-status" role="status" aria-live="polite"></p>
+
+  <button type="submit" class="button primary" disabled={!enabled}>
+    {enabled ? 'Send message' : 'Form unavailable — set PUBLIC_WEB3FORMS_KEY'}
+  </button>
+</form>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('.contact-form');
+  if (form && form.dataset.enabled === 'true') {
+    const status = form.querySelector<HTMLElement>('.contact-status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const buttonText = button.textContent ?? 'Send';
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      status.textContent = '';
+      status.dataset.tone = '';
+      button.disabled = true;
+      button.textContent = 'Sending…';
+      form.setAttribute('aria-busy', 'true');
+
+      const data = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          body: JSON.stringify(data),
+        });
+        const body = await res.json().catch(() => ({}));
+
+        if (res.ok && body.success) {
+          form.innerHTML =
+            '<p class="contact-success">Thanks — I\'ll reply soon.</p>';
+          return;
+        }
+        status.textContent =
+          body.message || `Send failed (${res.status}). Try again?`;
+        status.dataset.tone = 'error';
+      } catch (err) {
+        status.textContent = 'Network error. Check your connection and try again.';
+        status.dataset.tone = 'error';
+      } finally {
+        button.disabled = false;
+        button.textContent = buttonText;
+        form.removeAttribute('aria-busy');
+      }
+    });
+  }
+</script>
