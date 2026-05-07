@@ -1,0 +1,111 @@
+---
+type Step = { n: string; h: string; body: string };
+
+const steps: Step[] = [
+  { n: '01', h: 'Note', body: 'Write privately in Obsidian. Mark notes destined for the public vault.' },
+  { n: '02', h: 'Sync', body: 'A small script copies designated notes into the Astro blog collection.' },
+  { n: '03', h: 'Publish', body: 'Commit to GitHub. Pages workflow rebuilds. The site is current again.' },
+];
+---
+
+<section class="working-model">
+  <div class="working-model-inner">
+    <div class="rail">
+      <div class="rail-eyebrow">Process</div>
+      <h2 class="rail-title">Notes become articles, without changing tools.</h2>
+    </div>
+    <div class="step-list">
+      {steps.map((s, i) => (
+        <div class:list={['step-row', i === 0 && 'is-first']}>
+          <div class="step-n">{s.n}</div>
+          <h3 class="step-h">{s.h}</h3>
+          <p class="step-body">{s.body}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .working-model {
+    border-top: 1px solid var(--line);
+    padding: 80px var(--page-pad-x);
+    max-width: var(--max-content);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .working-model-inner {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 64px;
+  }
+
+  .rail-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .rail-title {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 14px 0 0;
+    color: var(--ink);
+  }
+
+  .step-row {
+    display: grid;
+    grid-template-columns: 60px 140px 1fr;
+    gap: 24px;
+    align-items: baseline;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .step-row.is-first {
+    border-top: 1px solid var(--line);
+  }
+
+  .step-n {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .step-h {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: var(--ink);
+  }
+
+  .step-body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+  }
+
+  @media (max-width: 1023px) {
+    .working-model-inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .step-row {
+      grid-template-columns: 40px 1fr;
+    }
+    .step-body {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
