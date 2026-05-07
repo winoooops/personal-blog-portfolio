@@ -1,0 +1,194 @@
+---
+import { withBase } from '../lib/paths';
+
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  active?: 'work' | 'blog' | 'info';
+}
+
+const { active = 'work' } = Astro.props;
+
+const main: NavLink[] = [
+  { label: 'Work', href: withBase('/') },
+  { label: 'Blog', href: withBase('/blog/') },
+  { label: 'Info', href: '#info' },
+];
+
+const contact: NavLink[] = [
+  { label: 'GitHub', href: 'https://github.com/winoooops' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/wei-wangcspractitioner' },
+  { label: 'Email', href: 'mailto:w.wang4869@gmail.com' },
+];
+
+const activeKey = active;
+---
+
+<header class="site-header">
+  <div class="site-header-grid">
+    <div class="brand">
+      <span class="monogram" aria-hidden="true">W</span>
+      <div class="brand-text">
+        <div class="brand-name">Will Wang</div>
+        <div class="brand-role">Software Engineer</div>
+      </div>
+    </div>
+
+    <nav class="nav-main" aria-label="Primary">
+      <div class="nav-eyebrow">Main</div>
+      <ul class="nav-list">
+        {main.map((item) => {
+          const key = item.label.toLowerCase();
+          const isActive = key === activeKey;
+          return (
+            <li>
+              <a
+                href={item.href}
+                class:list={['nav-link', isActive && 'is-active']}
+                aria-current={isActive ? 'page' : undefined}
+              >{item.label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+
+    <nav class="nav-contact" aria-label="Contact">
+      <div class="nav-eyebrow">Contact</div>
+      <ul class="nav-list nav-list-end">
+        {contact.map((item) => (
+          <li><a href={item.href} class="nav-link">{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    padding: 36px var(--page-pad-x) 0;
+    max-width: var(--max-content);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .site-header-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    align-items: start;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .monogram {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    flex: 0 0 auto;
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  .brand-role {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.01em;
+  }
+
+  .nav-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .nav-list {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-list-end {
+    justify-content: flex-end;
+  }
+
+  .nav-contact {
+    text-align: right;
+  }
+
+  .nav-link {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .nav-main .nav-link {
+    color: var(--ink);
+  }
+
+  .nav-main .nav-link:not(.is-active) {
+    color: var(--muted);
+  }
+
+  .nav-link.is-active {
+    color: var(--ink);
+    border-bottom: 1.5px solid var(--ink);
+    padding-bottom: 1px;
+  }
+
+  .nav-contact .nav-link {
+    color: var(--ink);
+  }
+
+  .nav-link:hover {
+    color: var(--ink);
+  }
+
+  .nav-contact .nav-link:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 1023px) {
+    .site-header-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .nav-contact {
+      text-align: left;
+    }
+    .nav-list-end {
+      justify-content: flex-start;
+    }
+  }
+</style>
