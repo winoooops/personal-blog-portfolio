@@ -1,0 +1,179 @@
+---
+type Tone = 'accent' | 'sun-1' | 'sun-2' | 'sand-3' | 'muted';
+type Activity = { time: string; glyph: string; tone: Tone; msg: string };
+
+const activities: Activity[] = [
+  { time: 'now', glyph: '⏵', tone: 'accent', msg: 'lifeline · spec planner running' },
+  { time: '12s', glyph: '+', tone: 'accent', msg: 'commit · feat(vimeflow): live agent panel' },
+  { time: '4m', glyph: '✓', tone: 'sun-2', msg: 'tests · 184 passed' },
+  { time: '11m', glyph: '↑', tone: 'sun-2', msg: 'deploy · pages.dev built in 47s' },
+  { time: '32m', glyph: '◆', tone: 'sand-3', msg: 'note · synced 3 entries from obsidian' },
+  { time: '1h', glyph: '⊕', tone: 'sun-1', msg: 'pr · #18 opened on lifeline' },
+  { time: '3h', glyph: '✎', tone: 'muted', msg: 'draft · "RAG without the rag" wip' },
+];
+---
+
+<section class="activity-timeline">
+  <div class="activity-inner">
+    <div class="rail">
+      <div class="rail-eyebrow">Activity</div>
+      <h2 class="rail-title">What I'm shipping right now.</h2>
+      <div class="streaming-pill">
+        <span class="streaming-dot" aria-hidden="true"></span>
+        <span class="streaming-label">STREAMING</span>
+      </div>
+    </div>
+
+    <div class="timeline">
+      <span class="timeline-rail" aria-hidden="true"></span>
+      {activities.map((a, i) => (
+        <div class:list={['activity-row', i === 0 && 'is-head']} style={`opacity: ${1 - i * 0.08}`}>
+          <span class:list={['activity-glyph', `tone-${a.tone}`]} aria-hidden="true">{a.glyph}</span>
+          <span class="activity-time">{a.time}</span>
+          <span class="activity-msg">{a.msg}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .activity-timeline {
+    border-top: 1px solid var(--line);
+    padding: 80px var(--page-pad-x);
+    max-width: var(--max-content);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .activity-inner {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 64px;
+  }
+
+  .rail-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .rail-title {
+    font-family: var(--font-display);
+    font-size: 36px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    margin: 14px 0 16px;
+    color: var(--ink);
+  }
+
+  .streaming-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(193, 74, 26, 0.08);
+    border: 1px solid rgba(193, 74, 26, 0.2);
+    font-family: var(--font-sans);
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .streaming-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: duneSunPulse 1.4s ease-in-out infinite;
+  }
+
+  .streaming-label {
+    letter-spacing: 0.06em;
+  }
+
+  .timeline {
+    position: relative;
+  }
+
+  .timeline-rail {
+    position: absolute;
+    left: 7px;
+    top: 6px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .activity-row {
+    display: grid;
+    grid-template-columns: 24px 80px 1fr;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 0;
+    position: relative;
+  }
+
+  .activity-glyph {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    color: var(--bg);
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+
+  .activity-row.is-head .activity-glyph {
+    color: #fff;
+    box-shadow: 0 0 0 4px rgba(193, 74, 26, 0.15);
+  }
+
+  .activity-glyph.tone-accent { background: var(--accent); }
+  .activity-glyph.tone-sun-1 { background: var(--sun-1); }
+  .activity-glyph.tone-sun-2 { background: var(--sun-2); }
+  .activity-glyph.tone-sand-3 { background: var(--sand-3); }
+  .activity-glyph.tone-muted { background: var(--muted); }
+
+  .activity-time {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .activity-msg {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-weight: 400;
+  }
+
+  .activity-row.is-head .activity-msg {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  @media (max-width: 1023px) {
+    .activity-inner {
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    .activity-row {
+      grid-template-columns: 24px 1fr;
+    }
+    .activity-time {
+      grid-column: 2 / -1;
+    }
+    .activity-msg {
+      grid-column: 2 / -1;
+    }
+  }
+</style>
