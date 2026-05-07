@@ -3,11 +3,11 @@ import type { CollectionEntry } from 'astro:content';
 import { withBase } from '../lib/paths';
 
 interface Props {
-  post: CollectionEntry<'blog'>;
+  post: CollectionEntry<'posts'>;
 }
 
 const { post } = Astro.props;
-const date = post.data.pubDate.toLocaleDateString('en', {
+const date = post.data.date.toLocaleDateString('en', {
   month: 'short',
   day: 'numeric',
   year: 'numeric',
@@ -17,14 +17,10 @@ const date = post.data.pubDate.toLocaleDateString('en', {
 
 <article class="post-card">
   <div class="post-card-meta">
-    <time datetime={post.data.pubDate.toISOString()}>{date}</time>
+    <time datetime={post.data.date.toISOString()}>{date}</time>
+    <span>{post.data.tag}</span>
     {post.data.source === 'obsidian' && <span>Obsidian</span>}
   </div>
   <h3><a href={withBase(`/blog/${post.id}/`)}>{post.data.title}</a></h3>
-  <p>{post.data.description}</p>
-  {post.data.tags.length > 0 && (
-    <ul class="tag-list" aria-label={`Tags for ${post.data.title}`}>
-      {post.data.tags.map((tag) => <li>{tag}</li>)}
-    </ul>
-  )}
+  <p>{post.data.dek}</p>
 </article>

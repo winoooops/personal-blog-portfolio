@@ -28,9 +28,11 @@ if (!existsSync(configPath)) {
 
 const config = JSON.parse(readFileSync(configPath, 'utf8'));
 const vaultPath = path.resolve(cwd, config.vaultPath || '');
-const outputDir = path.resolve(cwd, config.outputDir || 'src/content/blog');
+const outputDir = path.resolve(cwd, config.outputDir || 'src/content/posts');
 const assetOutputDir = path.resolve(cwd, config.assetOutputDir || 'public/obsidian-assets');
 const notes = Array.isArray(config.notes) ? config.notes : [];
+
+const VALID_TAGS = ['Essay', 'Notes', 'Build', 'Tools', 'Process'];
 
 if (!existsSync(vaultPath)) {
   console.error(`Vault path does not exist: ${vaultPath}`);
@@ -74,28 +76,33 @@ for (const noteEntry of notes) {
   const sourceMeta = parseSimpleFrontmatter(parsed.frontmatter);
   const slug = note.slug || slugify(sourceMeta.slug || sourceMeta.title || path.basename(note.source, path.extname(note.source)));
   const title = note.title || sourceMeta.title || titleFromSlug(slug);
-  const description = note.description || sourceMeta.description || `Notes on ${title}.`;
-  const pubDate =
+  const dek =
+    note.dek || note.description || sourceMeta.dek || sourceMeta.description || `Notes on ${title}.`;
+  const date =
+    note.date ||
     note.pubDate ||
-    sourceMeta.pubDate ||
     sourceMeta.date ||
+    sourceMeta.pubDate ||
     statSync(sourcePath).mtime.toISOString().slice(0, 10);
-  const tags = normalizeTags(note.tags || sourceMeta.tags);
+  const tag = pickTag(note.tag, sourceMeta.tag, note.tags, sourceMeta.tags);
+  const featured = Boolean(note.featured ?? sourceMeta.featured ?? false);
   const draft = Boolean(note.draft ?? sourceMeta.draft ?? false);
   const transformedBody = transformObsidianSyntax(parsed.body, vaultPath, assetOutputDir);
-  const frontmatter = [
+  const readMin = note.readMin || sourceMeta.readMin || estimateReadMin(transformedBody);
+  const frontmatterLines = [
     '---',
     `title: ${quoteYaml(title)}`,
-    `description: ${quoteYaml(description)}`,
-    `pubDate: ${quoteYaml(pubDate)}`,
-    'tags:',
-    ...tags.map((tag) => `  - ${quoteYaml(tag)}`),
-    `draft: ${draft}`,
-    'source: obsidian',
-    `obsidianPath: ${quoteYaml(note.source)}`,
-    '---',
-    '',
-  ].join('\n');
+    `tag: ${tag}`,
+    `date: ${quoteYaml(date)}`,
+    `readMin: ${readMin}`,
+    `dek: ${quoteYaml(dek)}`,
+  ];
+  if (featured) frontmatterLines.push('featured: true');
+  frontmatterLines.push(`draft: ${draft}`);
+  frontmatterLines.push('source: obsidian');
+  frontmatterLines.push(`obsidianPath: ${quoteYaml(note.source)}`);
+  frontmatterLines.push('---', '');
+  const frontmatter = frontmatterLines.join('\n');
   const targetPath = path.join(outputDir, `${slug}.md`);
 
   copied.push({ source: note.source, target: path.relative(cwd, targetPath) });
@@ -107,6 +114,24 @@ for (const noteEntry of notes) {
 
 for (const item of copied) {
   console.log(`${dryRun ? 'Would sync' : 'Synced'} ${item.source} -> ${item.target}`);
+}
+
+function pickTag(...candidates) {
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    const values = Array.isArray(candidate) ? candidate : [candidate];
+    for (const raw of values) {
+      const normalized = String(raw).trim();
+      const match = VALID_TAGS.find((tag) => tag.toLowerCase() === normalized.toLowerCase());
+      if (match) return match;
+    }
+  }
+  return 'Notes';
+}
+
+function estimateReadMin(body) {
+  const words = body.split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(words / 220));
 }
 
 function splitFrontmatter(text) {
@@ -196,12 +221,6 @@ function findFileByName(root, fileName) {
   }
 
   return '';
-}
-
-function normalizeTags(tags) {
-  if (!tags) return [];
-  const values = Array.isArray(tags) ? tags : String(tags).split(',');
-  return values.map((tag) => String(tag).replace(/^#/, '').trim()).filter(Boolean);
 }
 
 function slugify(value) {
