@@ -1,0 +1,170 @@
+---
+import { withBase } from '../lib/paths';
+
+const main = [
+  { label: 'Work', href: withBase('/') },
+  { label: 'Blog', href: withBase('/blog/') },
+  { label: 'Info', href: '#info' },
+];
+
+const contact = [
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/wei-wangcspractitioner' },
+  { label: 'GitHub', href: 'https://github.com/winoooops' },
+  { label: 'Email', href: 'mailto:w.wang4869@gmail.com' },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer-inner">
+    <div class="footer-grid">
+      <div class="brand">
+        <span class="monogram" aria-hidden="true">W</span>
+        <div class="brand-text">
+          <div class="brand-name">Will Wang</div>
+          <div class="brand-role">Software Engineer</div>
+        </div>
+      </div>
+
+      <nav class="nav-main" aria-label="Footer primary">
+        <div class="nav-eyebrow">Main</div>
+        <ul class="nav-list">
+          {main.map((item) => (
+            <li><a href={item.href} class="nav-link">{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="nav-contact" aria-label="Footer contact">
+        <div class="nav-eyebrow">Contact</div>
+        <ul class="nav-list nav-list-end">
+          {contact.map((item) => (
+            <li><a href={item.href} class="nav-link">{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </div>
+
+    <div class="footer-rule">
+      <span>© 2026 Will Wang. All Rights Reserved.</span>
+      <span>Made with coffee and long walks at Bondi (extra hot, no foam).</span>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding: 64px var(--page-pad-x) 48px;
+    max-width: var(--max-content);
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    align-items: end;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .monogram {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 18px;
+    flex: 0 0 auto;
+  }
+
+  .brand-name {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .brand-role {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .nav-eyebrow {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .nav-list {
+    display: flex;
+    gap: 18px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .nav-list-end {
+    justify-content: flex-end;
+  }
+
+  .nav-contact {
+    text-align: right;
+  }
+
+  .nav-link {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 16px;
+    color: var(--ink);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--accent);
+  }
+
+  .footer-rule {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 1023px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    .nav-contact {
+      text-align: left;
+    }
+    .nav-list-end {
+      justify-content: flex-start;
+    }
+    .footer-rule {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+</style>
