@@ -1,0 +1,17 @@
+{
+  "vaultPath": "/absolute/path/to/your/Obsidian/Vault",
+  "outputDir": "src/content/blog",
+  "assetOutputDir": "public/obsidian-assets",
+  "notes": [
+    {
+      "source": "Blog/My First Public Note.md",
+      "slug": "my-first-public-note",
+      "tags": ["obsidian", "notes"],
+      "draft": false
+    },
+    {
+      "source": "Projects/Portfolio Update.md",
+      "slug": "portfolio-update"
+    }
+  ]
+}

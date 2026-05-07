@@ -1,0 +1,49 @@
+---
+import '../styles/global.css';
+import { profile } from '../data/profile';
+import { withBase } from '../lib/paths';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = profile.name,
+  description = profile.intro,
+} = Astro.props;
+
+const pageTitle = title === profile.name ? title : `${title} | ${profile.name}`;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+    <link rel="icon" href={withBase('/favicon.ico')} />
+    <title>{pageTitle}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href={withBase('/')}>{profile.name}</a>
+      <nav class="site-nav" aria-label="Primary navigation">
+        <a href={withBase('/')}>Home</a>
+        <a href={withBase('/blog/')}>Blog</a>
+        <a href={withBase('/#projects')}>Projects</a>
+        <a href={withBase('/#skills')}>Skills</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>{profile.name}</p>
+      <div class="footer-links">
+        {profile.links.map((link) => <a href={link.href}>{link.label}</a>)}
+      </div>
+    </footer>
+  </body>
+</html>
