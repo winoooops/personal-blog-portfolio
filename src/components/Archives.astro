@@ -1,0 +1,24 @@
+---
+import { archives } from '../data/archives';
+---
+
+<section id="archives" class="block reveal">
+  <div class="eyebrow">[ ARCHIVES // SELECTED WORK ]</div>
+  <h2>Five harvests.</h2>
+  <div class="archive-list">
+    {archives.map((a) => (
+      <a class="work-row" href={a.href}>
+        <span class="yr">// {a.yr}</span>
+        <span class="title">{a.title}</span>
+        <span class="tag">{a.tag}</span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .archive-list {
+    margin-top: 40px;
+  }
+</style>
