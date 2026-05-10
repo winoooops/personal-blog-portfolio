@@ -1,0 +1,84 @@
+---
+import { experience } from '../data/experience';
+---
+
+<section class="block reveal">
+  <div class="eyebrow">[ EXPERIENCE ]</div>
+  <h2>Where the work has lived.</h2>
+  <div class="experience-list">
+    {experience.map((e) => (
+      <article class="experience-card">
+        <header class="experience-head">
+          <span class="experience-yr">{e.yr}</span>
+          <span class="experience-tags">{e.tags.join(' · ')}</span>
+        </header>
+        <h3 class="experience-role">{e.role}</h3>
+        <div class="experience-co">{e.co} · {e.loc}</div>
+        <p class="experience-body">{e.body}</p>
+      </article>
+    ))}
+  </div>
+</section>
+
+<style>
+  .experience-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 56px;
+  }
+
+  .experience-card {
+    border: 1px solid rgba(201, 165, 90, 0.2);
+    padding: 28px;
+    background: rgba(20, 15, 8, 0.4);
+    backdrop-filter: blur(8px);
+  }
+
+  .experience-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    flex-wrap: wrap;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .experience-yr {
+    color: var(--gold);
+  }
+
+  .experience-tags {
+    color: var(--gold-soft);
+  }
+
+  .experience-role {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: 0.04em;
+    margin: 0 0 6px;
+  }
+
+  .experience-co {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 18px;
+  }
+
+  .experience-body {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.7;
+    color: rgba(240, 230, 210, 0.75);
+    margin: 0;
+  }
+</style>

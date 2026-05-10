@@ -127,6 +127,15 @@ section.block p {
   margin-bottom: 16px;
 }
 
+.card .num-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  color: var(--gold-soft);
+  margin: -10px 0 16px;
+  padding-left: 12px;
+}
+
 .card h3 {
   font-family: var(--font-display);
   font-weight: 400;

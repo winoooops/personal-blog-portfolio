@@ -1,24 +1,25 @@
 ---
-type Pillar = { num: string; h: string; body: string };
+type Pillar = { num: string; sub?: string; h: string; body: string };
 
 const pillars: Pillar[] = [
   {
-    num: '001 // CRAFT',
-    h: "Tools that don't lie.",
+    num: '001 // AGENTIC',
+    sub: '↳ HARNESS ENGINEERING',
+    h: 'AI that finishes.',
     body:
-      'Honest interfaces for non-deterministic systems. Show the agent’s reasoning, the diff, the cost. No magic.',
+      'LangChain, AutoGen, MCP servers, RAG pipelines over real production data. The work is reliability — what the agent does when no one is watching. Harness engineering is the discipline of wrapping the model so the loop holds.',
   },
   {
-    num: '002 // HARNESS',
-    h: 'Loops that hold.',
+    num: '002 // CRAFT',
+    h: 'Code that reads itself.',
     body:
-      'Autonomous coding works when the spec, the review, and the rollback are all first-class. Lifeline is the proof.',
+      'TypeScript, React, Angular, Node, .NET. Refactored monoliths, modular architectures, REST and GraphQL APIs. Type-tight, test-driven, refactor-ready — the harness is only as good as the code under it.',
   },
   {
-    num: '003 // SURFACE',
-    h: 'Quiet over loud.',
+    num: '003 // INFRA',
+    h: 'Cloud, by default.',
     body:
-      'The terminal is still the right surface for most of this. Cream, gold, ink — the desert taught me restraint.',
+      'AWS (EC2, S3, Bedrock, Amplify), Docker, Kubernetes, GitHub Actions, TeamCity. Reusable infrastructure that supports the application without becoming the application. Cost-aware. Observable.',
   },
 ];
 ---
@@ -30,6 +31,7 @@ const pillars: Pillar[] = [
     {pillars.map((p) => (
       <article class="card">
         <div class="num">{p.num}</div>
+        {p.sub && <div class="num-sub">{p.sub}</div>}
         <h3>{p.h}</h3>
         <p>{p.body}</p>
       </article>
