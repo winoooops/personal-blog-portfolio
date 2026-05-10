@@ -1,0 +1,182 @@
+---
+import { withBase } from '../lib/paths';
+
+interface MenuLink {
+  label: string;
+  href: string;
+  current?: boolean;
+}
+
+const contactHref = import.meta.env.PUBLIC_WEB3FORMS_KEY ? withBase('/contact/') : 'mailto:w.wang4869@gmail.com';
+
+const links: MenuLink[] = [
+  { label: 'Work', href: withBase('/'), current: true },
+  { label: 'Archives', href: '#archives' },
+  { label: 'Notes', href: withBase('/blog/') },
+  { label: 'Contact', href: contactHref },
+];
+---
+
+<div class="menu-wrap" data-menu>
+  <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" data-menu-btn>
+    <span></span>
+    <span></span>
+  </button>
+  <div class="menu-links" data-menu-links>
+    {links.map((link) => (
+      <a
+        href={link.href}
+        class:list={['menu-link', link.current && 'current']}
+        aria-current={link.current ? 'page' : undefined}
+      >{link.label}</a>
+    ))}
+  </div>
+</div>
+
+<style>
+  .menu-wrap {
+    position: relative;
+    padding: 24px;
+    margin: -24px;
+  }
+
+  .menu-btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--gold-soft);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    background: rgba(20, 15, 8, 0.4);
+    cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .menu-wrap:hover .menu-btn,
+  .menu-wrap.is-open .menu-btn {
+    border-color: var(--gold);
+    background: rgba(40, 28, 12, 0.6);
+  }
+
+  .menu-btn span {
+    width: 14px;
+    height: 1px;
+    background: var(--gold);
+    display: block;
+    transition: transform 0.3s;
+  }
+
+  .menu-wrap:hover .menu-btn span:nth-child(1),
+  .menu-wrap.is-open .menu-btn span:nth-child(1) {
+    transform: translateY(3px) rotate(8deg);
+  }
+  .menu-wrap:hover .menu-btn span:nth-child(2),
+  .menu-wrap.is-open .menu-btn span:nth-child(2) {
+    transform: translateY(-3px) rotate(-8deg);
+  }
+
+  .menu-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0;
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.32s ease, transform 0.32s ease;
+  }
+
+  .menu-wrap:hover .menu-links,
+  .menu-wrap:focus-within .menu-links,
+  .menu-wrap.is-open .menu-links {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .menu-link {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 4px 0;
+    position: relative;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease, color 0.25s;
+  }
+
+  .menu-link::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    width: 0;
+    background: var(--gold);
+    transition: width 0.3s ease;
+  }
+
+  .menu-link:hover { color: var(--gold); }
+  .menu-link:hover::after { width: 100%; }
+  .menu-link.current::after { width: 100%; }
+
+  .menu-wrap:hover .menu-link,
+  .menu-wrap.is-open .menu-link {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .menu-wrap:hover .menu-link:nth-child(1),
+  .menu-wrap.is-open .menu-link:nth-child(1) { transition-delay: 0.05s; }
+  .menu-wrap:hover .menu-link:nth-child(2),
+  .menu-wrap.is-open .menu-link:nth-child(2) { transition-delay: 0.10s; }
+  .menu-wrap:hover .menu-link:nth-child(3),
+  .menu-wrap.is-open .menu-link:nth-child(3) { transition-delay: 0.15s; }
+  .menu-wrap:hover .menu-link:nth-child(4),
+  .menu-wrap.is-open .menu-link:nth-child(4) { transition-delay: 0.20s; }
+</style>
+
+<script>
+  // Tap-toggle on touch + outside-click + Escape close, plus desktop hover.
+  // Wrapped in IIFE so a failure here cannot break the rest of the page.
+  (function setupMenu() {
+    const wrap = document.querySelector<HTMLElement>('[data-menu]');
+    const btn = document.querySelector<HTMLButtonElement>('[data-menu-btn]');
+    if (!wrap || !btn) return;
+
+    function open() {
+      wrap!.classList.add('is-open');
+      btn!.setAttribute('aria-expanded', 'true');
+    }
+    function close() {
+      wrap!.classList.remove('is-open');
+      btn!.setAttribute('aria-expanded', 'false');
+    }
+    function toggle() {
+      if (wrap!.classList.contains('is-open')) close();
+      else open();
+    }
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggle();
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!wrap!.contains(e.target as Node)) close();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+  })();
+</script>
