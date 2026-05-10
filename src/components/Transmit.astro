@@ -1,0 +1,26 @@
+---
+const channelHref = import.meta.env.PUBLIC_WEB3FORMS_KEY
+  ? '/contact/'
+  : 'mailto:w.wang4869@gmail.com';
+---
+
+<section class="block reveal transmit">
+  <div class="eyebrow">[ TRANSMIT ]</div>
+  <h2>Send a signal.</h2>
+  <p class="transmit-body">
+    If you have a problem in agentic AI, autonomous coding, or developer tools — let's talk.
+    The harvest is open.
+  </p>
+  <a class="cta-channel" href={channelHref}>OPEN CHANNEL →</a>
+</section>
+
+<div class="transmission-end">END OF TRANSMISSION</div>
+
+<style>
+  .transmit {
+    text-align: center;
+  }
+  .transmit-body {
+    margin: 0 auto 32px;
+  }
+</style>

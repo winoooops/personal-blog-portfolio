@@ -1,0 +1,27 @@
+---
+// 1×40px gold ribbon below the hero. Bobs vertically on a 2.4s cycle.
+---
+
+<div class="scroll-cue" aria-hidden="true"></div>
+
+<style>
+  .scroll-cue {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    z-index: 6;
+    opacity: 0.7;
+    animation: cueDrop 2.4s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-cue {
+      animation: none;
+      opacity: 0.6;
+    }
+  }
+</style>

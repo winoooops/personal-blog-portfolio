@@ -1,0 +1,48 @@
+---
+import Menu from './Menu.astro';
+---
+
+<div class="corner tl">
+  <div class="name">W.W. NAVIGATOR</div>
+  <div><span class="label">SYSTEM STATUS:</span> SHIPPING [98.2%]</div>
+  <div><span class="label">COORDINATES:</span> 33°52'S 151°12'E</div>
+</div>
+
+<div class="corner tr">
+  <Menu />
+</div>
+
+<div class="corner bl">
+  <div>ESTABLISHED // SYDNEY 2018</div>
+  <div>ALL RIGHTS RESERVED // © 2026 W. WANG</div>
+</div>
+
+<div class="corner br">
+  <div>v1.0 // BUILD 4216</div>
+</div>
+
+<style>
+  .corner {
+    position: fixed;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    line-height: 1.8;
+    z-index: 10;
+    font-family: var(--font-mono);
+  }
+  .tl { top: 32px; left: 36px; }
+  .bl { bottom: 32px; left: 36px; color: var(--gold-soft); }
+  .tr { top: 32px; right: 64px; }
+  .br { bottom: 32px; right: 36px; color: var(--gold-soft); }
+
+  .corner .label {
+    color: var(--gold-soft);
+  }
+
+  .corner .name {
+    font-size: 13px;
+    letter-spacing: 0.32em;
+  }
+</style>

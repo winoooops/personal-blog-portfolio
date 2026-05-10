@@ -1,25 +1,114 @@
 ---
 import { getCollection } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import PostCard from '../../components/PostCard.astro';
+import Base from '../../layouts/Base.astro';
+import ScopeHUD from '../../components/ScopeHUD.astro';
+import Corners from '../../components/Corners.astro';
+import { withBase } from '../../lib/paths';
 
-const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
 );
+
+function formatMonth(d: Date): string {
+  return d.toLocaleDateString('en', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
 ---
 
-<BaseLayout title="Blog" description="Articles and notes from the portfolio blog.">
-  <section class="page-hero">
-    <div class="container">
-      <p class="eyebrow">Blog</p>
-      <h1>Articles and working notes</h1>
-      <p>Selected Markdown notes, including synced Obsidian articles, collected as a public writing archive.</p>
-    </div>
-  </section>
+<Base title="Notes — Will Wang" description="Field notes on agentic AI, autonomous coding, and developer tools.">
+  <ScopeHUD />
+  <Corners />
 
-  <section class="section">
-    <div class="container card-grid">
-      {posts.map((post) => <PostCard post={post} />)}
-    </div>
-  </section>
-</BaseLayout>
+  <main class="article-shell notes-index">
+    <header class="article-header">
+      <a class="article-back" href={withBase('/')}>← Back to navigation</a>
+      <div class="article-meta">[ NOTES // ARCHIVE ]</div>
+      <h1 class="article-title">Field notes from the desert.</h1>
+      <p class="article-dek">
+        Working notes and essays on agentic AI, autonomous coding, and the small rituals
+        that make it shippable.
+      </p>
+    </header>
+
+    <ul class="note-list">
+      {posts.map((post) => (
+        <li>
+          <a class="note-row" href={withBase(`/blog/${post.id}/`)}>
+            <span class="yr">{formatMonth(post.data.date)}</span>
+            <span class="title">{post.data.title}</span>
+            <span class="tag">{post.data.tag}</span>
+            <span class="arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </main>
+</Base>
+
+<style>
+  .notes-index {
+    max-width: 880px;
+  }
+
+  .note-list {
+    list-style: none;
+    padding: 0;
+    margin: 56px 0 0;
+  }
+
+  .note-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 140px 40px;
+    align-items: baseline;
+    gap: 24px;
+    padding: 22px 0;
+    border-bottom: 1px solid rgba(201, 165, 90, 0.15);
+    color: rgba(240, 230, 210, 0.85);
+    text-decoration: none;
+    transition: padding-left 0.3s ease, color 0.3s ease;
+  }
+
+  .note-row:hover {
+    padding-left: 16px;
+    color: var(--gold);
+  }
+
+  .note-row .yr {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    color: var(--gold-soft);
+    text-transform: uppercase;
+  }
+
+  .note-row .title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  .note-row .tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .note-row .arrow {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--gold);
+    text-align: right;
+  }
+
+  @media (max-width: 1023px) {
+    .note-row {
+      grid-template-columns: 100px 1fr 32px;
+      gap: 12px;
+    }
+    .note-row .tag {
+      grid-column: 1 / -1;
+    }
+  }
+</style>

@@ -1,0 +1,23 @@
+/* Design tokens — A.K. Navigator (Khalil-style)
+ * Single source of truth for color, type, page geometry. */
+
+:root {
+  --bg: #1a1408;
+  --bg-deep: #0e0a04;
+  --gold: #c9a55a;
+  --gold-soft: #8a7038;
+  --ink: #f0e6d2;
+  --muted: #6b5a36;
+
+  --font-sans: "Inter", -apple-system, system-ui, sans-serif;
+  --font-display: "Inter", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+
+  --page-pad-x: 48px;
+  --max-content: 1280px;
+}
+
+@keyframes cueDrop {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.4; }
+  50% { transform: translateX(-50%) translateY(8px); opacity: 0.9; }
+}

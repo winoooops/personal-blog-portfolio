@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>A.K. Navigator — Khalil-style landing</title>
+<style>
+  :root {
+    --bg: #1a1408;
+    --bg-deep: #0e0a04;
+    --gold: #c9a55a;
+    --gold-soft: #8a7038;
+    --ink: #f0e6d2;
+    --muted: #6b5a36;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg-deep); color: var(--ink); font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace; }
+  body { overflow-x: hidden; }
+
+  /* Fixed WebGL canvas background */
+  #stars {
+    position: fixed; inset: 0; width: 100vw; height: 100vh;
+    z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, #1a1408 0%, #0a0703 80%);
+  }
+
+  /* Hero — fixed full-viewport, content centered */
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 2;
+  }
+
+  .corner {
+    position: fixed;
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold); line-height: 1.8;
+    z-index: 10;
+  }
+  .tl { top: 32px; left: 36px; }
+  .bl { bottom: 32px; left: 36px; color: var(--gold-soft); }
+  .tr { top: 32px; right: 64px; }
+  .br { bottom: 32px; right: 36px; color: var(--gold-soft); }
+  .corner .label { color: var(--gold-soft); }
+  .corner .name { font-size: 13px; letter-spacing: 0.32em; }
+
+  .menu-wrap {
+    position: relative;
+    padding: 24px;            /* invisible hover buffer so links don't disappear */
+    margin: -24px;
+  }
+  .menu-btn {
+    width: 44px; height: 44px; border: 1px solid var(--gold-soft);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    background: rgba(20,15,8,0.4); cursor: pointer;
+    transition: border-color 0.3s, background 0.3s;
+  }
+  .menu-wrap:hover .menu-btn { border-color: var(--gold); background: rgba(40,28,12,0.6); }
+  .menu-btn span { width: 14px; height: 1px; background: var(--gold); display: block; transition: transform 0.3s; }
+  .menu-wrap:hover .menu-btn span:nth-child(1) { transform: translateY(3px) rotate(8deg); }
+  .menu-wrap:hover .menu-btn span:nth-child(2) { transform: translateY(-3px) rotate(-8deg); }
+
+  .menu-links {
+    position: absolute; top: 100%; right: 0; margin-top: 0;
+    padding-top: 14px;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 14px;
+    opacity: 0; pointer-events: none;
+    transform: translateY(-6px);
+    transition: opacity 0.32s ease, transform 0.32s ease;
+  }
+  .menu-wrap:hover .menu-links,
+  .menu-wrap:focus-within .menu-links {
+    opacity: 1; pointer-events: auto; transform: translateY(0);
+  }
+  .menu-link {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 13px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--cream); text-decoration: none;
+    padding: 4px 0; position: relative;
+    opacity: 0; transform: translateX(8px);
+    transition: opacity 0.4s ease, transform 0.4s ease, color 0.25s;
+  }
+  .menu-link::after {
+    content: ''; position: absolute; right: 0; bottom: 0;
+    height: 1px; width: 0; background: var(--gold);
+    transition: width 0.3s ease;
+  }
+  .menu-link:hover { color: var(--gold); }
+  .menu-link:hover::after { width: 100%; }
+  .menu-wrap:hover .menu-link { opacity: 1; transform: translateX(0); }
+  .menu-wrap:hover .menu-link:nth-child(1) { transition-delay: 0.05s; }
+  .menu-wrap:hover .menu-link:nth-child(2) { transition-delay: 0.10s; }
+  .menu-wrap:hover .menu-link:nth-child(3) { transition-delay: 0.15s; }
+  .menu-wrap:hover .menu-link:nth-child(4) { transition-delay: 0.20s; }
+  .menu-link.current::after { width: 100%; }
+
+  .target {
+    position: fixed; width: 22px; height: 22px; border: 1px solid var(--gold);
+    border-radius: 50%; pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
+    z-index: 5;
+  }
+  .target::before {
+    content: ''; position: absolute; inset: 50% 50% auto auto; width: 1px; height: 6px;
+    background: var(--gold); transform: translate(50%, -100%);
+  }
+
+  .hero-content {
+    text-align: center; position: relative;
+  }
+  .hero-content .eyebrow {
+    font-size: 11px; letter-spacing: 0.4em; color: var(--gold);
+    margin-bottom: 28px;
+  }
+  .hero-content .eyebrow::before { content: '[ '; }
+  .hero-content .eyebrow::after { content: ' ]'; }
+  .hero-content h1 {
+    font-family: "Inter", -apple-system, sans-serif;
+    font-size: clamp(56px, 9vw, 140px);
+    font-weight: 300; letter-spacing: 0.32em;
+    color: #fff;
+    text-shadow: 0 0 60px rgba(201,165,90,0.45), 0 0 120px rgba(201,165,90,0.2);
+    line-height: 1;
+    margin-bottom: 24px;
+    padding-left: 0.32em; /* compensate for trailing tracking */
+  }
+  .hero-content .sub {
+    font-size: 13px; letter-spacing: 0.4em; color: var(--gold);
+  }
+
+  .scroll-cue {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    width: 1px; height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    z-index: 6; opacity: 0.7;
+    animation: cueDrop 2.4s ease-in-out infinite;
+  }
+  @keyframes cueDrop {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.4; }
+    50%      { transform: translateX(-50%) translateY(8px); opacity: 0.9; }
+  }
+
+  /* Content sections — revealed on scroll */
+  .content {
+    position: relative; z-index: 2;
+    padding: 0 48px;
+    max-width: 1280px; margin: 0 auto;
+  }
+  section.block {
+    padding: 140px 0;
+    border-top: 1px solid rgba(201,165,90,0.15);
+  }
+  section.block:first-of-type { border-top: none; }
+  section.block .eyebrow {
+    font-size: 11px; letter-spacing: 0.32em; color: var(--gold);
+    text-transform: uppercase; margin-bottom: 24px;
+  }
+  section.block h2 {
+    font-family: "Inter", sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 300; letter-spacing: 0.04em;
+    color: #fff; margin-bottom: 32px; line-height: 1.1;
+  }
+  section.block p {
+    font-family: "Inter", sans-serif;
+    font-size: 18px; line-height: 1.7;
+    color: rgba(240,230,210,0.75);
+    max-width: 680px;
+  }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 48px; margin-top: 56px; }
+  .card {
+    border: 1px solid rgba(201,165,90,0.2);
+    padding: 28px;
+    background: rgba(20,15,8,0.4);
+    backdrop-filter: blur(8px);
+  }
+  .card .num { font-size: 11px; letter-spacing: 0.32em; color: var(--gold); margin-bottom: 16px; }
+  .card h3 { font-family: "Inter", sans-serif; font-weight: 400; font-size: 22px; color: #fff; margin-bottom: 14px; letter-spacing: 0.04em; }
+  .card p { font-size: 14px; line-height: 1.65; color: rgba(240,230,210,0.65); }
+
+  .work-row {
+    display: grid; grid-template-columns: 80px 1fr 200px 80px;
+    align-items: baseline; gap: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid rgba(201,165,90,0.15);
+    color: rgba(240,230,210,0.85);
+    font-family: "Inter", sans-serif;
+    cursor: pointer; transition: padding-left 0.3s, color 0.3s;
+  }
+  .work-row:hover { padding-left: 16px; color: var(--gold); }
+  .work-row .yr { font-size: 12px; letter-spacing: 0.18em; color: var(--gold-soft); font-family: "JetBrains Mono", monospace; }
+  .work-row .title { font-size: 28px; font-weight: 300; letter-spacing: 0.04em; }
+  .work-row .tag { font-size: 12px; letter-spacing: 0.18em; color: var(--muted); text-transform: uppercase; }
+  .work-row .arrow { font-size: 16px; color: var(--gold); text-align: right; }
+
+  /* Sci-fi telescope viewport border */
+  .scope {
+    position: fixed; inset: 0; pointer-events: none; z-index: 4;
+  }
+  .scope::before, .scope::after {
+    content: ''; position: absolute; pointer-events: none;
+  }
+  /* outer hairline rectangle inset from edges */
+  .scope-frame {
+    position: absolute; inset: 36px;
+    border: 1px solid rgba(201,165,90,0.18);
+  }
+  .scope-frame::before, .scope-frame::after {
+    content: ''; position: absolute; left: 50%; transform: translateX(-50%);
+    width: 60px; height: 1px; background: var(--gold-soft);
+  }
+  .scope-frame::before { top: -1px; }
+  .scope-frame::after  { bottom: -1px; }
+  /* corner brackets */
+  .scope-corner {
+    position: absolute; width: 28px; height: 28px;
+    border-color: var(--gold);
+  }
+  .scope-corner.tl { top: 10px; left: 10px; border-top: 1px solid var(--gold-soft); border-left: 1px solid var(--gold-soft); }
+  .scope-corner.tr { top: 10px; right: 10px; border-top: 1px solid var(--gold-soft); border-right: 1px solid var(--gold-soft); }
+  .scope-corner.bl { bottom: 10px; left: 10px; border-bottom: 1px solid var(--gold-soft); border-left: 1px solid var(--gold-soft); }
+  .scope-corner.br { bottom: 10px; right: 10px; border-bottom: 1px solid var(--gold-soft); border-right: 1px solid var(--gold-soft); }
+  /* center crosshair ticks */
+  .scope-tick {
+    position: absolute; background: rgba(201,165,90,0.4);
+  }
+  .scope-tick.h-l { top: 50%; left: 16px;  width: 22px; height: 1px; }
+  .scope-tick.h-r { top: 50%; right: 16px; width: 22px; height: 1px; }
+  .scope-tick.v-t { left: 50%; top: 16px;    width: 1px; height: 22px; }
+  .scope-tick.v-b { left: 50%; bottom: 16px; width: 1px; height: 22px; }
+  /* side rangefinder marks */
+  .scope-ladder {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    width: 6px; height: 240px;
+    background: linear-gradient(to bottom,
+      transparent 0%, transparent 8%,
+      var(--gold-soft) 8%, var(--gold-soft) calc(8% + 1px),
+      transparent calc(8% + 1px),
+      transparent 16%,
+      var(--gold-soft) 16%, var(--gold-soft) calc(16% + 1px),
+      transparent calc(16% + 1px),
+      transparent 32%,
+      var(--gold-soft) 32%, var(--gold-soft) calc(32% + 1px),
+      transparent calc(32% + 1px),
+      transparent 50%,
+      var(--gold) 50%, var(--gold) calc(50% + 1px),
+      transparent calc(50% + 1px),
+      transparent 68%,
+      var(--gold-soft) 68%, var(--gold-soft) calc(68% + 1px),
+      transparent calc(68% + 1px),
+      transparent 84%,
+      var(--gold-soft) 84%, var(--gold-soft) calc(84% + 1px),
+      transparent calc(84% + 1px),
+      transparent 92%,
+      var(--gold-soft) 92%, var(--gold-soft) calc(92% + 1px),
+      transparent calc(92% + 1px));
+    opacity: 0.7;
+  }
+  .scope-ladder.right { left: auto; right: 16px; }
+  /* vignette dim around scope */
+  .scope-vignette {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(10,7,3,0.55) 100%);
+  }
+
+  /* Reveal on scroll */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s ease, transform 1s ease; }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- WebGL starfield -->
+<canvas id="stars"></canvas>
+
+<!-- Sci-fi telescope viewport border -->
+<div class="scope">
+  <div class="scope-vignette"></div>
+  <div class="scope-frame"></div>
+  <div class="scope-corner tl"></div>
+  <div class="scope-corner tr"></div>
+  <div class="scope-corner bl"></div>
+  <div class="scope-corner br"></div>
+  <div class="scope-tick h-l"></div>
+  <div class="scope-tick h-r"></div>
+  <div class="scope-tick v-t"></div>
+  <div class="scope-tick v-b"></div>
+  <div class="scope-ladder"></div>
+  <div class="scope-ladder right"></div>
+</div>
+
+<!-- Fixed UI corners -->
+<div class="corner tl">
+  <div class="name">A.K. NAVIGATOR</div>
+  <div><span class="label">SYSTEM STATUS:</span> HARVESTING [98.2%]</div>
+  <div><span class="label">COORDINATES:</span> 28°24'N 34°25'E</div>
+</div>
+<div class="corner tr">
+  <div class="menu-wrap">
+    <div class="menu-btn"><span></span><span></span></div>
+    <div class="menu-links">
+      <a class="menu-link current" href="#">Expeditions</a>
+      <a class="menu-link" href="#">The Void</a>
+      <a class="menu-link" href="#">Chronicles</a>
+      <a class="menu-link" href="#">Contact</a>
+    </div>
+  </div>
+</div>
+<div class="corner bl">
+  <div>ESTABLISHED // PRE-IMPERIAL ERA</div>
+  <div>ALL RIGHTS RESERVED // © 10191 AG</div>
+</div>
+<div class="corner br"><div>v1.0 // BUILD 4216</div></div>
+
+<div class="target" id="target" style="left: 70%; top: 30%;"></div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">ARCHITECT OF SANDS</div>
+    <h1>KHALIL</h1>
+    <div class="sub">DESIGN &nbsp; &amp; &nbsp; DEVELOPMENT</div>
+  </div>
+</div>
+
+<div class="scroll-cue"></div>
+
+<!-- Scroll-revealed content -->
+<div class="content">
+
+  <section class="block reveal">
+    <div class="eyebrow">[ MANIFEST ]</div>
+    <h2>I build interfaces<br/>for autonomous systems.</h2>
+    <p>Software engineer working at the intersection of agentic AI and dev tooling. Based in Sydney. The work is quiet, the surface is dark, and the harvest is steady — terminals, harnesses, control planes for coding agents that can hold their own.</p>
+  </section>
+
+  <section class="block reveal">
+    <div class="eyebrow">[ DOCTRINE ]</div>
+    <h2>Three pillars.</h2>
+    <div class="grid-3">
+      <div class="card">
+        <div class="num">001 // CRAFT</div>
+        <h3>Tools that don't lie.</h3>
+        <p>Honest interfaces for non-deterministic systems. Show the agent's reasoning, the diff, the cost. No magic.</p>
+      </div>
+      <div class="card">
+        <div class="num">002 // HARNESS</div>
+        <h3>Loops that hold.</h3>
+        <p>Autonomous coding works when the spec, the review, and the rollback are all first-class. Lifeline is the proof.</p>
+      </div>
+      <div class="card">
+        <div class="num">003 // SURFACE</div>
+        <h3>Quiet over loud.</h3>
+        <p>The terminal is still the right surface for most of this. Cream, gold, ink — the desert taught me restraint.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block reveal">
+    <div class="eyebrow">[ ARCHIVES // SELECTED WORK ]</div>
+    <h2>Five harvests.</h2>
+    <div style="margin-top: 40px;">
+      <div class="work-row"><span class="yr">// '26</span><span class="title">Vimeflow</span><span class="tag">CONTROL PLANE</span><span class="arrow">→</span></div>
+      <div class="work-row"><span class="yr">// '25</span><span class="title">Lifeline</span><span class="tag">AUTO HARNESS</span><span class="arrow">→</span></div>
+      <div class="work-row"><span class="yr">// '25</span><span class="title">wskills</span><span class="tag">SKILL LIBRARY</span><span class="arrow">→</span></div>
+      <div class="work-row"><span class="yr">// '25</span><span class="title">llm-tui</span><span class="tag">RUST · CLI</span><span class="arrow">→</span></div>
+      <div class="work-row"><span class="yr">// '24</span><span class="title">nvim</span><span class="tag">DAILY DRIVER</span><span class="arrow">→</span></div>
+    </div>
+  </section>
+
+  <section class="block reveal" style="text-align: center;">
+    <div class="eyebrow">[ TRANSMIT ]</div>
+    <h2>Send a signal.</h2>
+    <p style="margin: 0 auto 32px;">If you have a problem in agentic AI, autonomous coding, or developer tools — let's talk. The harvest is open.</p>
+    <a href="mailto:" style="display: inline-block; padding: 16px 40px; border: 1px solid var(--gold); color: var(--gold); text-decoration: none; letter-spacing: 0.32em; font-size: 12px;">OPEN CHANNEL →</a>
+  </section>
+
+  <div style="text-align: center; padding: 48px 0; color: var(--gold-soft); font-size: 11px; letter-spacing: 0.18em;">
+    END OF TRANSMISSION
+  </div>
+
+</div>
+
+<script>
+// ─── Scroll reveal (run FIRST so a WebGL failure can't break it) ──────────
+(function setupReveal() {
+  const els = document.querySelectorAll('.reveal');
+  function checkVis() {
+    const vh = window.innerHeight;
+    let allIn = true;
+    els.forEach(el => {
+      if (el.classList.contains('in')) return;
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.95 && r.bottom > 0) el.classList.add('in');
+      else allIn = false;
+    });
+    return allIn;
+  }
+  // Belt 1: IntersectionObserver
+  try {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+    }, { threshold: 0.05, rootMargin: '0px 0px -5% 0px' });
+    els.forEach(el => io.observe(el));
+  } catch (e) {}
+  // Belt 2: scroll listener
+  window.addEventListener('scroll', checkVis, { passive: true });
+  // Belt 3: RAF polling (catches programmatic scrolls + iframes)
+  function poll() {
+    if (!checkVis()) requestAnimationFrame(poll);
+  }
+  poll();
+})();
+
+// ─── Custom reticle (independent of WebGL) ────────────────────────────────
+(function setupReticle() {
+  const targetEl = document.getElementById('target');
+  let tx = window.innerWidth * 0.7, ty = window.innerHeight * 0.3;
+  let tgtX = tx, tgtY = ty;
+  window.addEventListener('mousemove', (e) => { tgtX = e.clientX; tgtY = e.clientY; });
+  function tick() {
+    tx += (tgtX - tx) * 0.08;
+    ty += (tgtY - ty) * 0.08;
+    targetEl.style.left = tx + 'px';
+    targetEl.style.top  = ty + 'px';
+    requestAnimationFrame(tick);
+  }
+  tick();
+})();
+
+// ─── WebGL starfield with mouse parallax ──────────────────────────────────
+(function setupStarfield() {
+  const canvas = document.getElementById('stars');
+  const gl = canvas.getContext('webgl', { alpha: true, antialias: false, premultipliedAlpha: false })
+         || canvas.getContext('experimental-webgl');
+  if (!gl) {
+    console.warn('WebGL unavailable — starfield disabled, page still works');
+    return;
+  }
+
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  function resize() {
+    canvas.width = Math.max(1, Math.floor(window.innerWidth * DPR));
+    canvas.height = Math.max(1, Math.floor(window.innerHeight * DPR));
+    canvas.style.width = window.innerWidth + 'px';
+    canvas.style.height = window.innerHeight + 'px';
+    gl.viewport(0, 0, canvas.width, canvas.height);
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  const vs = [
+    'precision mediump float;',
+    'attribute vec2 a_pos;',
+    'varying vec2 v_uv;',
+    'void main() {',
+    '  v_uv = a_pos * 0.5 + 0.5;',
+    '  gl_Position = vec4(a_pos, 0.0, 1.0);',
+    '}'
+  ].join('\n');
+
+  // Flow-noise smoke shader — domain-warped FBM + ember sparks
+  const fs = [
+    'precision highp float;',
+    'varying vec2 v_uv;',
+    'uniform vec2 u_mouse;',
+    'uniform vec2 u_resolution;',
+    'uniform float u_time;',
+
+    // hash + value noise
+    'float hash(vec2 p) {',
+    '  p = fract(p * vec2(123.34, 456.21));',
+    '  p += dot(p, p + 45.32);',
+    '  return fract(p.x * p.y);',
+    '}',
+    'float noise(vec2 p) {',
+    '  vec2 i = floor(p);',
+    '  vec2 f = fract(p);',
+    '  vec2 u = f * f * (3.0 - 2.0 * f);',
+    '  float a = hash(i);',
+    '  float b = hash(i + vec2(1.0, 0.0));',
+    '  float c = hash(i + vec2(0.0, 1.0));',
+    '  float d = hash(i + vec2(1.0, 1.0));',
+    '  return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);',
+    '}',
+    // 5-octave fractional Brownian motion
+    'float fbm(vec2 p) {',
+    '  float v = 0.0; float a = 0.5;',
+    '  mat2 rot = mat2(0.8, -0.6, 0.6, 0.8);',
+    '  for (int i = 0; i < 5; i++) {',
+    '    v += a * noise(p);',
+    '    p = rot * p * 2.02;',
+    '    a *= 0.5;',
+    '  }',
+    '  return v;',
+    '}',
+
+    'void main() {',
+    '  vec2 uv = v_uv;',
+    '  float aspect = u_resolution.x / u_resolution.y;',
+    '  vec2 p = vec2(uv.x * aspect, uv.y);',
+    // gentle mouse parallax — shifts the cloud rather than rotating
+    '  p += u_mouse * vec2(0.04, 0.03);',
+
+    // domain-warp the FBM with a slower-evolving FBM offset for curling tendrils
+    '  vec2 q = vec2(',
+    '    fbm(p * 1.4 + vec2(u_time * 0.04, 0.0)),',
+    '    fbm(p * 1.4 + vec2(5.2, u_time * 0.035))',
+    '  );',
+    '  vec2 r = vec2(',
+    '    fbm(p * 2.0 + 4.0 * q + vec2(1.7, 9.2) + u_time * 0.06),',
+    '    fbm(p * 2.0 + 4.0 * q + vec2(8.3, 2.8) + u_time * 0.05)',
+    '  );',
+    '  float n = fbm(p * 2.2 + 3.5 * r);',
+    // base smoke density: bias toward edges (top/bottom darker, middle wispier — like screenshot)
+    '  float verticalShape = 1.0 - smoothstep(0.0, 0.5, abs(uv.y - 0.5));',  // 0 at top/bottom, 1 in middle band
+    '  verticalShape = mix(0.55, 1.0, verticalShape);',  // never fully dark
+    '  float density = pow(n, 1.4) * verticalShape;',
+
+    // colors — deep warm bg, cream/sand smoke, ember orange highlights
+    '  vec3 bg     = vec3(0.07, 0.045, 0.025);',           // deep umber base
+    '  vec3 smoke  = vec3(0.78, 0.68, 0.50);',             // warm sand cream
+    '  vec3 ember  = vec3(0.92, 0.45, 0.20);',             // terracotta highlight
+    '  vec3 col = bg;',
+    '  col = mix(col, smoke,  density * 0.55);',
+    '  col = mix(col, ember,  pow(density, 3.5) * 0.35);', // hot cores in densest tendrils
+
+    // ember sparks — small bright dots scrolling slowly (like screenshot orange specks)
+    '  vec2 sparkUV = uv * vec2(aspect, 1.0) * 6.0 + vec2(-u_time * 0.04, -u_time * 0.06);',
+    '  vec2 cellId = floor(sparkUV);',
+    '  vec2 cellF  = fract(sparkUV) - 0.5;',
+    '  float h = hash(cellId);',
+    '  float h2 = hash(cellId + 13.7);',
+    '  vec2 jitter = vec2(hash(cellId + 2.1), hash(cellId + 7.3)) - 0.5;',
+    '  float sparkD = length(cellF - jitter * 0.6);',
+    '  float sparkOn = step(0.985, h);',                   // ~1.5% of cells host a spark
+    '  float sparkBrightness = (1.0 - smoothstep(0.0, 0.04, sparkD)) * sparkOn;',
+    '  float sparkPulse = 0.6 + 0.4 * sin(u_time * 1.4 + h2 * 30.0);',
+    '  col += ember * sparkBrightness * sparkPulse * 1.8;',
+
+    // subtle vignette
+    '  float vig = 1.0 - smoothstep(0.55, 1.05, length(uv - 0.5) * 1.2);',
+    '  col *= mix(0.7, 1.0, vig);',
+
+    '  gl_FragColor = vec4(col, 1.0);',
+    '}'
+  ].join('\n');
+
+  function compile(type, src) {
+    const sh = gl.createShader(type);
+    gl.shaderSource(sh, src);
+    gl.compileShader(sh);
+    if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) {
+      console.error('shader compile error:', gl.getShaderInfoLog(sh), src);
+      return null;
+    }
+    return sh;
+  }
+  const vsh = compile(gl.VERTEX_SHADER, vs);
+  const fsh = compile(gl.FRAGMENT_SHADER, fs);
+  if (!vsh || !fsh) return;
+
+  const prog = gl.createProgram();
+  gl.attachShader(prog, vsh);
+  gl.attachShader(prog, fsh);
+  gl.linkProgram(prog);
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+    console.error('program link error:', gl.getProgramInfoLog(prog));
+    return;
+  }
+  gl.useProgram(prog);
+
+  // fullscreen triangle (covers viewport with a single 3-vertex draw)
+  const verts = new Float32Array([-1, -1, 3, -1, -1, 3]);
+  const buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+  gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+  const loc = gl.getAttribLocation(prog, 'a_pos');
+  gl.enableVertexAttribArray(loc);
+  gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+  const u_mouse = gl.getUniformLocation(prog, 'u_mouse');
+  const u_time  = gl.getUniformLocation(prog, 'u_time');
+  const u_res   = gl.getUniformLocation(prog, 'u_resolution');
+
+  gl.disable(gl.BLEND);
+  gl.clearColor(0, 0, 0, 1);
+
+  let targetMx = 0, targetMy = 0;
+  let mx = 0, my = 0;
+  window.addEventListener('mousemove', (e) => {
+    targetMx = (e.clientX / window.innerWidth) * 2 - 1;
+    targetMy = -((e.clientY / window.innerHeight) * 2 - 1);
+  });
+
+  const start = performance.now();
+  function frame() {
+    const t = (performance.now() - start) / 1000;
+    mx += (targetMx - mx) * 0.04;
+    my += (targetMy - my) * 0.04;
+
+    gl.useProgram(prog);
+    gl.uniform2f(u_mouse, mx, my);
+    gl.uniform1f(u_time, t);
+    gl.uniform2f(u_res, canvas.width, canvas.height);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
+</script>
+</body>
+</html>

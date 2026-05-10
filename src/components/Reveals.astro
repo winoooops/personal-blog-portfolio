@@ -1,0 +1,58 @@
+---
+// Three-belt scroll reveal: IntersectionObserver + scroll fallback +
+// rAF poll. Adds `.in` to every `.reveal` element when it crosses the
+// viewport threshold, so the CSS transitions take over from there.
+//
+// Wrapped in its own IIFE so a failure here cannot break the rest
+// of the page. Bails immediately on prefers-reduced-motion (the CSS
+// already collapses .reveal to its visible state in that case).
+---
+
+<script>
+  (function setupReveals() {
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    const els = document.querySelectorAll<HTMLElement>('.reveal');
+    if (!els.length) return;
+
+    if (reduceMotion) {
+      els.forEach((el) => el.classList.add('in'));
+      return;
+    }
+
+    function checkVis() {
+      const vh = window.innerHeight;
+      let allIn = true;
+      els.forEach((el) => {
+        if (el.classList.contains('in')) return;
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.95 && r.bottom > 0) el.classList.add('in');
+        else allIn = false;
+      });
+      return allIn;
+    }
+
+    // Belt 1: IntersectionObserver
+    try {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) e.target.classList.add('in');
+          });
+        },
+        { threshold: 0.05, rootMargin: '0px 0px -5% 0px' },
+      );
+      els.forEach((el) => io.observe(el));
+    } catch {
+      // IO unsupported — belts 2 and 3 still cover this case.
+    }
+
+    // Belt 2: scroll listener
+    window.addEventListener('scroll', checkVis, { passive: true });
+
+    // Belt 3: rAF poll (catches programmatic scrolls before any input fires)
+    function poll() {
+      if (!checkVis()) requestAnimationFrame(poll);
+    }
+    poll();
+  })();
+</script>

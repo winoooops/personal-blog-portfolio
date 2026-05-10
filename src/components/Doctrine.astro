@@ -1,0 +1,38 @@
+---
+type Pillar = { num: string; h: string; body: string };
+
+const pillars: Pillar[] = [
+  {
+    num: '001 // CRAFT',
+    h: "Tools that don't lie.",
+    body:
+      'Honest interfaces for non-deterministic systems. Show the agent’s reasoning, the diff, the cost. No magic.',
+  },
+  {
+    num: '002 // HARNESS',
+    h: 'Loops that hold.',
+    body:
+      'Autonomous coding works when the spec, the review, and the rollback are all first-class. Lifeline is the proof.',
+  },
+  {
+    num: '003 // SURFACE',
+    h: 'Quiet over loud.',
+    body:
+      'The terminal is still the right surface for most of this. Cream, gold, ink — the desert taught me restraint.',
+  },
+];
+---
+
+<section class="block reveal">
+  <div class="eyebrow">[ DOCTRINE ]</div>
+  <h2>Three pillars.</h2>
+  <div class="grid-3">
+    {pillars.map((p) => (
+      <article class="card">
+        <div class="num">{p.num}</div>
+        <h3>{p.h}</h3>
+        <p>{p.body}</p>
+      </article>
+    ))}
+  </div>
+</section>

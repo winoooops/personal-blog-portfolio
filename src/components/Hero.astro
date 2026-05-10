@@ -1,0 +1,59 @@
+---
+// 100vh flex-centered hero. Eyebrow + name + sub.
+---
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="eyebrow">ARCHITECT OF AGENTS</div>
+    <h1>WILL WANG</h1>
+    <div class="sub">DESIGN &nbsp; &amp; &nbsp; DEVELOPMENT</div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .hero-content {
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-content .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+    margin-bottom: 28px;
+  }
+
+  .hero-content .eyebrow::before { content: '[ '; }
+  .hero-content .eyebrow::after { content: ' ]'; }
+
+  .hero-content h1 {
+    font-family: var(--font-display);
+    font-size: clamp(56px, 9vw, 140px);
+    font-weight: 300;
+    letter-spacing: 0.32em;
+    color: #fff;
+    text-shadow:
+      0 0 60px rgba(201, 165, 90, 0.45),
+      0 0 120px rgba(201, 165, 90, 0.2);
+    line-height: 1;
+    margin-bottom: 24px;
+    padding-left: 0.32em;
+  }
+
+  .hero-content .sub {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.4em;
+    color: var(--gold);
+  }
+</style>
