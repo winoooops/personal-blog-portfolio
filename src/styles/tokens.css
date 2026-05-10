@@ -1,19 +1,13 @@
-/* Design tokens — Direction B (Dune Editorial)
- * Single source of truth for color, type, page geometry, and animation. */
+/* Design tokens — A.K. Navigator (Khalil-style)
+ * Single source of truth for color, type, page geometry. */
 
 :root {
-  --bg: #f4efe6;
-  --bg-soft: #ece6d9;
-  --ink: #1a1a1a;
-  --ink-soft: #2a2a2a;
-  --muted: #7a7468;
-  --line: #d8d0c0;
-  --accent: #c14a1a;
-  --sand-1: #e8d9b8;
-  --sand-2: #d6bf8e;
-  --sand-3: #b89760;
-  --sun-1: #e8623d;
-  --sun-2: #f0a040;
+  --bg: #1a1408;
+  --bg-deep: #0e0a04;
+  --gold: #c9a55a;
+  --gold-soft: #8a7038;
+  --ink: #f0e6d2;
+  --muted: #6b5a36;
 
   --font-sans: "Inter", -apple-system, system-ui, sans-serif;
   --font-display: "Inter", -apple-system, system-ui, sans-serif;
@@ -23,38 +17,7 @@
   --max-content: 1280px;
 }
 
-@keyframes duneAccentShift {
-  0% { color: #c14a1a; }
-  33% { color: #e8623d; }
-  66% { color: #b89760; }
-  100% { color: #c14a1a; }
-}
-
-@keyframes duneShimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes duneSunPulse {
-  0%, 100% { opacity: 0.92; transform: translateY(0); }
-  50% { opacity: 1; transform: translateY(-3px); }
-}
-
-@keyframes duneBirdDrift {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(280px); }
-}
-
-.dune-accent {
-  animation: duneAccentShift 8s ease-in-out infinite;
-  font-weight: 500;
-}
-
-.dune-shimmer {
-  background: linear-gradient(90deg, #c14a1a, #e8623d, #f0a040, #b89760, #c14a1a);
-  background-size: 300% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: duneShimmer 7s ease-in-out infinite;
+@keyframes cueDrop {
+  0%, 100% { transform: translateX(-50%) translateY(0); opacity: 0.4; }
+  50% { transform: translateX(-50%) translateY(8px); opacity: 0.9; }
 }
