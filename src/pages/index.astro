@@ -1,31 +1,11 @@
 ---
 import Base from '../layouts/Base.astro';
-import SiteHeader from '../components/SiteHeader.astro';
-import Hero from '../components/Hero.astro';
-import CurrentlyStrip from '../components/CurrentlyStrip.astro';
-import SelectedWork from '../components/SelectedWork.astro';
-import StackTools from '../components/StackTools.astro';
-import WorkingModel from '../components/WorkingModel.astro';
-import ActivityTimeline from '../components/ActivityTimeline.astro';
-import Journal from '../components/Journal.astro';
-import Colophon from '../components/Colophon.astro';
-import SiteFooter from '../components/SiteFooter.astro';
+import Starfield from '../components/Starfield.astro';
 ---
 
 <Base
   title="Will Wang — Software Engineer"
-  description="Software engineer at Vimeflow. Tools, harnesses, and systems for coding agents."
+  description="Software engineer working at the intersection of agentic AI and developer tooling. Based in Sydney."
 >
-  <SiteHeader active="work" />
-  <main>
-    <Hero />
-    <CurrentlyStrip />
-    <SelectedWork />
-    <StackTools />
-    <WorkingModel />
-    <ActivityTimeline />
-    <Journal />
-    <Colophon />
-  </main>
-  <SiteFooter />
+  <Starfield />
 </Base>
