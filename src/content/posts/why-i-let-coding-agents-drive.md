@@ -3,9 +3,9 @@ title: Why I let coding agents drive — and where I keep my hands on the wheel.
 tag: Essay
 date: 2026-03-15
 readMin: 8
-featured: true
 dek: A year of pairing with Claude and Codex on real shipping work. The patterns that survived, the ones that didn't, and the small rituals that make autonomous coding actually feel safe.
 source: local
+draft: true
 ---
 
 A year ago I started letting an agent drive most of the keyboard time on real shipping work. Twelve months in, the rituals that survived have very little to do with which model is best.
