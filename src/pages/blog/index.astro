@@ -25,7 +25,7 @@ function formatMonth(d: Date): string {
       <h1 class="article-title">Field notes from the desert.</h1>
       <p class="article-dek">
         Working notes and essays on agentic AI, autonomous coding, and the small rituals
-        that make it shippable.
+        that make it shippable. Bilingual — English + 中文.
       </p>
     </header>
 
@@ -34,7 +34,10 @@ function formatMonth(d: Date): string {
         <li>
           <a class="note-row" href={withBase(`/blog/${post.id}/`)}>
             <span class="yr">{formatMonth(post.data.date)}</span>
-            <span class="title">{post.data.title}</span>
+            <span class="title">
+              {post.data.title}
+              {post.data.lang === 'zh' && <span class="lang-badge">中文</span>}
+            </span>
             <span class="tag">{post.data.tag}</span>
             <span class="arrow" aria-hidden="true">→</span>
           </a>
@@ -85,6 +88,21 @@ function formatMonth(d: Date): string {
     font-size: 22px;
     font-weight: 300;
     letter-spacing: 0.02em;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .note-row .lang-badge {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    border: 1px solid var(--gold-soft);
+    padding: 2px 6px;
+    border-radius: 2px;
+    line-height: 1.2;
   }
 
   .note-row .tag {

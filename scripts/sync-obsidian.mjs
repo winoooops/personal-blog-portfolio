@@ -85,6 +85,7 @@ for (const noteEntry of notes) {
     sourceMeta.pubDate ||
     statSync(sourcePath).mtime.toISOString().slice(0, 10);
   const tag = pickTag(note.tag, sourceMeta.tag, note.tags, sourceMeta.tags);
+  const lang = pickLang(note.lang, sourceMeta.lang);
   const featured = Boolean(note.featured ?? sourceMeta.featured ?? false);
   const draft = Boolean(note.draft ?? sourceMeta.draft ?? false);
   const transformedBody = transformObsidianSyntax(parsed.body, vaultPath, assetOutputDir);
@@ -93,6 +94,7 @@ for (const noteEntry of notes) {
     '---',
     `title: ${quoteYaml(title)}`,
     `tag: ${tag}`,
+    `lang: ${lang}`,
     `date: ${quoteYaml(date)}`,
     `readMin: ${readMin}`,
     `dek: ${quoteYaml(dek)}`,
@@ -127,6 +129,16 @@ function pickTag(...candidates) {
     }
   }
   return 'Notes';
+}
+
+function pickLang(...candidates) {
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    const normalized = String(candidate).trim().toLowerCase();
+    if (normalized === 'zh' || normalized === 'chinese' || normalized === '中文') return 'zh';
+    if (normalized === 'en' || normalized === 'english') return 'en';
+  }
+  return 'en';
 }
 
 function estimateReadMin(body) {

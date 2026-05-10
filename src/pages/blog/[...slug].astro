@@ -33,6 +33,11 @@ const formattedDate = post.data.date.toLocaleDateString('en', {
       <a class="article-back" href={withBase('/blog/')}>← Back to notes</a>
       <div class="article-meta">
         {post.data.tag} <span class="sep">·</span> {formattedDate} <span class="sep">·</span> {post.data.readMin} min
+        {post.data.lang === 'zh' && (
+          <>
+            <span class="sep">·</span> 中文
+          </>
+        )}
       </div>
       <h1 class="article-title">{post.data.title}</h1>
       <p class="article-dek">{post.data.dek}</p>
