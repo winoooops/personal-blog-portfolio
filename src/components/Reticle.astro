@@ -1,0 +1,66 @@
+---
+// Custom cursor follower — 22×22 gold ring with a top tick. Hidden on
+// touch devices and when prefers-reduced-motion is set. Independent IIFE.
+---
+
+<div class="target" id="target" aria-hidden="true"></div>
+
+<style>
+  .target {
+    position: fixed;
+    left: 70%;
+    top: 30%;
+    width: 22px;
+    height: 22px;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s;
+    z-index: 5;
+  }
+
+  .target::before {
+    content: '';
+    position: absolute;
+    inset: 50% 50% auto auto;
+    width: 1px;
+    height: 6px;
+    background: var(--gold);
+    transform: translate(50%, -100%);
+  }
+
+  @media (hover: none), (prefers-reduced-motion: reduce) {
+    .target { display: none; }
+  }
+</style>
+
+<script>
+  (function setupReticle() {
+    const target = document.getElementById('target') as HTMLElement | null;
+    if (!target) return;
+
+    const isTouch = !window.matchMedia?.('(hover: hover)').matches;
+    const reduceMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (isTouch || reduceMotion) return;
+
+    let tx = window.innerWidth * 0.7;
+    let ty = window.innerHeight * 0.3;
+    let tgtX = tx;
+    let tgtY = ty;
+
+    window.addEventListener('mousemove', (e) => {
+      tgtX = e.clientX;
+      tgtY = e.clientY;
+    });
+
+    function tick() {
+      tx += (tgtX - tx) * 0.08;
+      ty += (tgtY - ty) * 0.08;
+      target!.style.left = tx + 'px';
+      target!.style.top = ty + 'px';
+      requestAnimationFrame(tick);
+    }
+    tick();
+  })();
+</script>
