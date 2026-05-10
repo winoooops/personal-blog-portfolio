@@ -45,4 +45,16 @@ import Menu from './Menu.astro';
     font-size: 13px;
     letter-spacing: 0.32em;
   }
+
+  /* Below ~1500px, the content max-width (1280px) is too close to the
+   * corner text, so they overlap. Hide the decorative text corners and
+   * keep only the TR menu (still needed for navigation). The mobile
+   * breakpoint at 1023px in other components handles the rest. */
+  @media (max-width: 1500px) {
+    .corner.tl,
+    .corner.bl,
+    .corner.br {
+      display: none;
+    }
+  }
 </style>
