@@ -220,7 +220,7 @@ section.block p {
 .article-shell {
   position: relative;
   z-index: 2;
-  max-width: 880px;
+  max-width: 1024px;
   margin: 0 auto;
   padding: 200px var(--page-pad-x) 120px;
 }

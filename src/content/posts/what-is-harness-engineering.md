@@ -2,7 +2,7 @@
 title: "什么是 Harness Engineering"
 tag: Essay
 lang: zh
-date: 2026-05-20
+date: 2026-03-20
 readMin: 14
 dek: Symphony 三人团队五个月写完一百万行代码。重点不是 Codex 多强，而是 Codex 周围的脚手架——Linter、架构边界、Reviewer agents、文档体系。
 source: obsidian
