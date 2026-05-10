@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
-import BaseLayout from '../../layouts/BaseLayout.astro';
+import Base from '../../layouts/Base.astro';
+import ScopeHUD from '../../components/ScopeHUD.astro';
+import Corners from '../../components/Corners.astro';
 import Giscus from '../../components/Giscus.astro';
 import { withBase } from '../../lib/paths';
 
@@ -16,25 +18,24 @@ export async function getStaticPaths() {
 const { post } = Astro.props;
 const { Content } = await render(post);
 const formattedDate = post.data.date.toLocaleDateString('en', {
-  month: 'long',
-  day: 'numeric',
+  month: 'short',
   year: 'numeric',
   timeZone: 'UTC',
 });
 ---
 
-<BaseLayout title={post.data.title} description={post.data.dek}>
+<Base title={post.data.title} description={post.data.dek}>
+  <ScopeHUD />
+  <Corners />
+
   <article class="article-shell">
     <header class="article-header">
-      <a class="text-link" href={withBase('/blog/')}>Back to blog</a>
-      <p class="eyebrow">
-        <time datetime={post.data.date.toISOString()}>{formattedDate}</time>
-      </p>
-      <h1>{post.data.title}</h1>
-      <p>{post.data.dek}</p>
-      <ul class="tag-list" aria-label={`Tag for ${post.data.title}`}>
-        <li>{post.data.tag}</li>
-      </ul>
+      <a class="article-back" href={withBase('/blog/')}>← Back to notes</a>
+      <div class="article-meta">
+        {post.data.tag} <span class="sep">·</span> {formattedDate} <span class="sep">·</span> {post.data.readMin} min
+      </div>
+      <h1 class="article-title">{post.data.title}</h1>
+      <p class="article-dek">{post.data.dek}</p>
     </header>
     <div class="prose">
       <Content />
@@ -44,4 +45,4 @@ const formattedDate = post.data.date.toLocaleDateString('en', {
       <Giscus />
     </aside>
   </article>
-</BaseLayout>
+</Base>
