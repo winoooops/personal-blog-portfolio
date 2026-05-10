@@ -43,13 +43,14 @@ button {
 /* Hide the native cursor — the gold reticle (Reticle.astro) replaces it.
  * Inputs keep their native text cursor so typing stays usable. Touch
  * devices and reduced-motion users restore the native cursor since the
- * reticle is hidden in those cases. */
-body { cursor: none; }
-a, button, [role='button'] { cursor: none; }
+ * reticle is hidden in those cases. The * selector wins specificity
+ * battles with per-component cursor declarations. */
+*, *::before, *::after { cursor: none; }
 input, textarea, [contenteditable] { cursor: text; }
 
 @media (hover: none), (prefers-reduced-motion: reduce) {
-  body, a, button, [role='button'] { cursor: auto; }
+  *, *::before, *::after { cursor: auto; }
+  input, textarea, [contenteditable] { cursor: text; }
 }
 
 .reveal {
@@ -173,7 +174,7 @@ section.block p {
   border-bottom: 1px solid rgba(201, 165, 90, 0.15);
   color: rgba(240, 230, 210, 0.85);
   font-family: var(--font-display);
-  cursor: pointer;
+  cursor: none;
   text-decoration: none;
   transition: padding-left 0.3s ease, color 0.3s ease;
 }
