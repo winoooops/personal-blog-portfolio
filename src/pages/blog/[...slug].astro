@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ScopeHUD from '../../components/ScopeHUD.astro';
 import Corners from '../../components/Corners.astro';
+import Reticle from '../../components/Reticle.astro';
 import Giscus from '../../components/Giscus.astro';
 import { withBase } from '../../lib/paths';
 
@@ -27,6 +28,7 @@ const formattedDate = post.data.date.toLocaleDateString('en', {
 <Base title={post.data.title} description={post.data.dek}>
   <ScopeHUD />
   <Corners />
+  <Reticle />
 
   <article class="article-shell">
     <header class="article-header">

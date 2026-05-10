@@ -40,6 +40,18 @@ button {
   outline-offset: 4px;
 }
 
+/* Hide the native cursor — the gold reticle (Reticle.astro) replaces it.
+ * Inputs keep their native text cursor so typing stays usable. Touch
+ * devices and reduced-motion users restore the native cursor since the
+ * reticle is hidden in those cases. */
+body { cursor: none; }
+a, button, [role='button'] { cursor: none; }
+input, textarea, [contenteditable] { cursor: text; }
+
+@media (hover: none), (prefers-reduced-motion: reduce) {
+  body, a, button, [role='button'] { cursor: auto; }
+}
+
 .reveal {
   opacity: 0;
   transform: translateY(40px);

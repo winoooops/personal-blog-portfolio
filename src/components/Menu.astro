@@ -4,14 +4,13 @@ import { withBase } from '../lib/paths';
 interface MenuLink {
   label: string;
   href: string;
-  current?: boolean;
 }
 
 const contactHref = import.meta.env.PUBLIC_WEB3FORMS_KEY ? withBase('/contact/') : 'mailto:w.wang4869@gmail.com';
 
 const links: MenuLink[] = [
-  { label: 'Work', href: withBase('/'), current: true },
-  { label: 'Projects', href: '#projects' },
+  { label: 'Work', href: withBase('/') },
+  { label: 'Projects', href: `${withBase('/')}#projects` },
   { label: 'Blogs', href: withBase('/blog/') },
   { label: 'Contact', href: contactHref },
 ];
@@ -24,11 +23,7 @@ const links: MenuLink[] = [
   </button>
   <div class="menu-links" data-menu-links>
     {links.map((link) => (
-      <a
-        href={link.href}
-        class:list={['menu-link', link.current && 'current']}
-        aria-current={link.current ? 'page' : undefined}
-      >{link.label}</a>
+      <a href={link.href} class="menu-link">{link.label}</a>
     ))}
   </div>
 </div>
@@ -128,7 +123,6 @@ const links: MenuLink[] = [
 
   .menu-link:hover { color: var(--gold); }
   .menu-link:hover::after { width: 100%; }
-  .menu-link.current::after { width: 100%; }
 
   .menu-wrap:hover .menu-link,
   .menu-wrap.is-open .menu-link {

@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import ScopeHUD from '../../components/ScopeHUD.astro';
 import Corners from '../../components/Corners.astro';
+import Reticle from '../../components/Reticle.astro';
 import { withBase } from '../../lib/paths';
 
 const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
@@ -17,6 +18,7 @@ function formatMonth(d: Date): string {
 <Base title="Notes — Will Wang" description="Field notes on agentic AI, autonomous coding, and developer tools.">
   <ScopeHUD />
   <Corners />
+  <Reticle />
 
   <main class="article-shell notes-index">
     <header class="article-header">
