@@ -1,0 +1,24 @@
+---
+import { projects } from '../data/projects';
+---
+
+<section id="projects" class="block reveal">
+  <div class="eyebrow">[ PROJECTS ]</div>
+  <h2>Five harvests.</h2>
+  <div class="project-list">
+    {projects.map((p) => (
+      <a class="work-row" href={p.href}>
+        <span class="yr">// {p.yr}</span>
+        <span class="title">{p.title}</span>
+        <span class="tag">{p.tag}</span>
+        <span class="arrow" aria-hidden="true">→</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<style>
+  .project-list {
+    margin-top: 40px;
+  }
+</style>
