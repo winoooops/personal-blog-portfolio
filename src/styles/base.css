@@ -357,6 +357,50 @@ section.block p {
   padding-left: 1.4em;
 }
 
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.6em 0;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.prose th,
+.prose td {
+  text-align: left;
+  vertical-align: top;
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(201, 165, 90, 0.15);
+}
+
+.prose th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border-bottom: 1px solid rgba(201, 165, 90, 0.3);
+}
+
+.prose td {
+  color: rgba(240, 230, 210, 0.78);
+}
+
+.prose th:first-child,
+.prose td:first-child {
+  padding-left: 0;
+}
+
+.prose th:last-child,
+.prose td:last-child {
+  padding-right: 0;
+}
+
+.prose th strong,
+.prose td strong {
+  color: #fff;
+}
+
 .prose li + li {
   margin-top: 0.5em;
 }
