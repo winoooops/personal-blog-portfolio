@@ -1,31 +1,201 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import Base from '../layouts/Base.astro';
+import ScopeHUD from '../components/ScopeHUD.astro';
+import Corners from '../components/Corners.astro';
+import Reticle from '../components/Reticle.astro';
 import ContactForm from '../components/ContactForm.astro';
+import { withBase } from '../lib/paths';
 import { profile } from '../data/profile';
 ---
 
-<BaseLayout title="Contact" description={profile.contactBlurb}>
-  <section class="page-hero">
-    <div class="container">
-      <p class="eyebrow">Contact</p>
-      <h1>Get in touch</h1>
-      <p>{profile.contactBlurb}</p>
-    </div>
-  </section>
+<Base title="Open Channel — Will Wang" description={profile.contactBlurb}>
+  <ScopeHUD />
+  <Corners />
+  <Reticle />
 
-  <section class="section">
-    <div class="container split">
-      <div>
-        <ContactForm />
-      </div>
-      <aside class="contact-sidebar" aria-labelledby="other-channels">
-        <h2 id="other-channels">Other channels</h2>
+  <main class="article-shell contact-shell">
+    <header class="article-header">
+      <a class="article-back" href={withBase('/')}>← Back to navigation</a>
+      <div class="article-meta">[ TRANSMIT // CHANNEL ]</div>
+      <h1 class="article-title">Open the channel.</h1>
+      <p class="article-dek">{profile.contactBlurb}</p>
+    </header>
+
+    <div class="contact-grid">
+      <ContactForm />
+
+      <aside class="contact-aside" aria-labelledby="other-channels">
+        <h2 id="other-channels">[ OTHER CHANNELS ]</h2>
         <ul>
           {profile.links.map((link) => (
-            <li><a class="text-link" href={link.href}>{link.label}</a></li>
+            <li><a href={link.href}>{link.label}</a></li>
           ))}
         </ul>
       </aside>
     </div>
-  </section>
-</BaseLayout>
+  </main>
+</Base>
+
+<style>
+  .contact-shell { max-width: 1024px; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 72px;
+    align-items: start;
+  }
+
+  @media (max-width: 768px) {
+    .contact-grid { grid-template-columns: 1fr; gap: 56px; }
+  }
+
+  .contact-aside h2 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    color: var(--gold-soft);
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0 0 24px;
+  }
+
+  .contact-aside ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contact-aside a {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    color: var(--ink);
+    text-decoration: none;
+    padding-bottom: 2px;
+    border-bottom: 1px solid transparent;
+    transition: color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .contact-aside a:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold-soft);
+  }
+
+  /* Form styling — :global so it reaches ContactForm.astro's emitted markup */
+  :global(.contact-form) {
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
+  }
+
+  :global(.contact-form label) {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  :global(.contact-form label > span) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: var(--gold-soft);
+    text-transform: uppercase;
+  }
+
+  :global(.contact-form label > span small) {
+    text-transform: none;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-left: 6px;
+    font-size: 10px;
+  }
+
+  :global(.contact-form input),
+  :global(.contact-form textarea) {
+    background: rgba(20, 15, 8, 0.4);
+    border: 1px solid rgba(201, 165, 90, 0.18);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 15px;
+    padding: 13px 16px;
+    outline: none;
+    transition: border-color 0.25s ease, background 0.25s ease;
+  }
+
+  :global(.contact-form input:focus),
+  :global(.contact-form textarea:focus) {
+    border-color: var(--gold);
+    background: rgba(40, 28, 12, 0.5);
+  }
+
+  :global(.contact-form textarea) {
+    resize: vertical;
+    min-height: 160px;
+  }
+
+  :global(.contact-form em[data-error]) {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: #c84b4b;
+    letter-spacing: 0.1em;
+    font-style: normal;
+  }
+
+  :global(.contact-form em[data-error]:empty) { display: none; }
+
+  :global(.contact-status) {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    color: var(--gold-soft);
+    min-height: 18px;
+    margin: 0;
+  }
+
+  :global(.contact-status[data-tone="error"]) { color: #d05050; }
+
+  :global(.contact-form button[type="submit"]) {
+    align-self: flex-start;
+    padding: 16px 40px;
+    border: 1px solid var(--gold);
+    background: transparent;
+    color: var(--gold);
+    font-family: var(--font-mono);
+    letter-spacing: 0.32em;
+    font-size: 12px;
+    text-transform: uppercase;
+    transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+  }
+
+  :global(.contact-form button[type="submit"]:hover:not(:disabled)) {
+    background: rgba(201, 165, 90, 0.08);
+  }
+
+  :global(.contact-form button[type="submit"]:disabled) {
+    opacity: 0.5;
+    border-color: var(--gold-soft);
+    color: var(--gold-soft);
+  }
+
+  :global(.contact-success) {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    padding: 24px 0;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  :global(.contact-form .hp) {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+</style>

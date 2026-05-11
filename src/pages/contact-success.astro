@@ -1,23 +1,54 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
+import Base from '../layouts/Base.astro';
+import ScopeHUD from '../components/ScopeHUD.astro';
+import Corners from '../components/Corners.astro';
+import Reticle from '../components/Reticle.astro';
 import { withBase } from '../lib/paths';
 ---
 
-<BaseLayout title="Thanks" description="Your message has been received.">
-  <section class="page-hero">
-    <div class="container">
-      <p class="eyebrow">Contact</p>
-      <h1>Thanks — message received</h1>
-      <p>I'll reply soon. In the meantime, you can keep reading.</p>
-    </div>
-  </section>
+<Base title="Transmission received — Will Wang" description="Your message has been received.">
+  <ScopeHUD />
+  <Corners />
+  <Reticle />
 
-  <section class="section">
-    <div class="container">
-      <p>
-        <a class="button primary" href={withBase('/blog/')}>Read the blog</a>
-        <a class="button secondary" href={withBase('/')}>Home</a>
-      </p>
+  <main class="article-shell">
+    <header class="article-header">
+      <a class="article-back" href={withBase('/')}>← Back to navigation</a>
+      <div class="article-meta">[ TRANSMIT // RECEIVED ]</div>
+      <h1 class="article-title">Transmission received.</h1>
+      <p class="article-dek">I'll reply soon. In the meantime, you can keep reading.</p>
+    </header>
+
+    <div class="success-actions">
+      <a class="cta-channel" href={withBase('/blog/')}>READ THE BLOG →</a>
+      <a class="success-secondary" href={withBase('/')}>Return to navigation</a>
     </div>
-  </section>
-</BaseLayout>
+  </main>
+</Base>
+
+<style>
+  .success-actions {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 8px;
+  }
+
+  .success-secondary {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding-bottom: 2px;
+    text-transform: uppercase;
+    transition: color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .success-secondary:hover {
+    color: var(--gold);
+    border-bottom-color: var(--gold-soft);
+  }
+</style>
