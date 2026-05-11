@@ -345,6 +345,26 @@ section.block p {
   border-radius: 6px;
   padding: 22px;
   overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 165, 90, 0.3) transparent;
+}
+
+.prose pre::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.prose pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.prose pre::-webkit-scrollbar-thumb {
+  background: rgba(201, 165, 90, 0.25);
+  border-radius: 3px;
+}
+
+.prose pre::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 165, 90, 0.45);
 }
 
 .prose pre code {
@@ -448,11 +468,56 @@ section.block p {
   max-height: calc(92vh - 64px);
   font-size: 15px;
   line-height: 1.7;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(201, 165, 90, 0.3) transparent;
+}
+
+.code-dialog-body::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+.code-dialog-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.code-dialog-body::-webkit-scrollbar-thumb {
+  background: rgba(201, 165, 90, 0.25);
+  border-radius: 4px;
+}
+
+.code-dialog-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(201, 165, 90, 0.45);
 }
 
 .code-dialog-body code {
   background: transparent;
   padding: 0;
+}
+
+/* When the VIEW dialog is open, restore the native cursor so users can
+ * select code text intuitively. The reticle hides too so we don't have
+ * two pointers fighting for attention. The body.has-dialog-open class
+ * is toggled by CodeBlocks.astro on dialog open/close. */
+body.has-dialog-open,
+body.has-dialog-open *,
+body.has-dialog-open *::before,
+body.has-dialog-open *::after {
+  cursor: auto;
+}
+
+body.has-dialog-open .code-dialog-body,
+body.has-dialog-open .code-dialog-body * {
+  cursor: text;
+}
+
+body.has-dialog-open button,
+body.has-dialog-open .menu-link {
+  cursor: pointer;
+}
+
+body.has-dialog-open .target {
+  display: none;
 }
 
 .prose ul, .prose ol {

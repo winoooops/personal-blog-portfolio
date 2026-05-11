@@ -70,6 +70,7 @@
         const code = pre.querySelector('code');
         dialogTarget!.innerHTML = code ? code.innerHTML : pre.innerHTML;
         dialogTarget!.dataset.raw = pre.textContent ?? '';
+        document.body.classList.add('has-dialog-open');
         dialog!.showModal();
       });
       controls.appendChild(viewBtn);
@@ -78,6 +79,9 @@
     dialogClose.addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', (e) => {
       if (e.target === dialog) dialog.close();
+    });
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('has-dialog-open');
     });
     dialogCopy.addEventListener('click', () => {
       const raw = dialogTarget!.dataset.raw ?? dialogTarget!.textContent ?? '';
