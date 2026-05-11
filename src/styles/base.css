@@ -341,9 +341,9 @@ section.block p {
 
 .prose pre {
   background: var(--bg);
-  border: 1px solid rgba(201, 165, 90, 0.15);
-  border-radius: 2px;
-  padding: 18px;
+  border: 1px solid rgba(201, 165, 90, 0.2);
+  border-radius: 6px;
+  padding: 22px;
   overflow-x: auto;
 }
 
@@ -394,28 +394,29 @@ section.block p {
 
 /* Full-screen dialog opened by VIEW */
 .code-dialog {
-  background: var(--bg-deep);
-  border: 1px solid var(--gold-soft);
+  background: rgba(14, 10, 4, 0.96);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(201, 165, 90, 0.25);
   color: var(--ink);
   padding: 0;
-  width: min(960px, 92vw);
-  max-height: 88vh;
+  width: min(1200px, 95vw);
+  max-height: 92vh;
   margin: auto;
-  border-radius: 3px;
+  border-radius: 6px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
 }
 
 .code-dialog::backdrop {
   background: rgba(10, 7, 3, 0.85);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
 }
 
 .code-dialog-head {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  padding: 14px 18px;
-  border-bottom: 1px solid rgba(201, 165, 90, 0.18);
+  padding: 16px 22px;
+  border-bottom: 1px solid rgba(201, 165, 90, 0.2);
 }
 
 .code-dialog-btn {
@@ -442,11 +443,11 @@ section.block p {
   border: none;
   border-radius: 0;
   background: transparent;
-  padding: 24px;
+  padding: 32px;
   overflow: auto;
-  max-height: calc(88vh - 56px);
-  font-size: 14px;
-  line-height: 1.6;
+  max-height: calc(92vh - 64px);
+  font-size: 15px;
+  line-height: 1.7;
 }
 
 .code-dialog-body code {
