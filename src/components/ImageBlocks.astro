@@ -1,0 +1,63 @@
+---
+// Progressive enhancement for <img> inside .prose:
+//   • Each image becomes clickable (cursor: zoom-in)
+//   • Clicking opens a full-screen <dialog> showing the image at
+//     its natural size, with a CLOSE button.
+// Mirrors the CodeBlocks dialog pattern so the cursor/backdrop
+// behavior stays consistent.
+---
+
+<dialog class="image-dialog" id="image-dialog">
+  <div class="image-dialog-head">
+    <span class="image-dialog-caption" data-dialog-caption></span>
+    <button type="button" class="image-dialog-btn" data-dialog-close aria-label="Close">CLOSE</button>
+  </div>
+  <div class="image-dialog-body">
+    <img data-dialog-target alt="" />
+  </div>
+</dialog>
+
+<script>
+  (function setupImageBlocks() {
+    const proseImages = document.querySelectorAll<HTMLImageElement>('.prose img');
+    if (!proseImages.length) return;
+
+    const dialog = document.getElementById('image-dialog') as HTMLDialogElement | null;
+    const dialogImg = dialog?.querySelector<HTMLImageElement>('[data-dialog-target]');
+    const dialogClose = dialog?.querySelector<HTMLButtonElement>('[data-dialog-close]');
+    const dialogCaption = dialog?.querySelector<HTMLElement>('[data-dialog-caption]');
+
+    if (!dialog || !dialogImg || !dialogClose) return;
+
+    proseImages.forEach((img) => {
+      img.classList.add('prose-img-zoomable');
+      img.setAttribute('role', 'button');
+      img.setAttribute('tabindex', '0');
+      img.addEventListener('click', () => openDialog(img));
+      img.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          openDialog(img);
+        }
+      });
+    });
+
+    function openDialog(img: HTMLImageElement) {
+      dialogImg!.src = img.currentSrc || img.src;
+      dialogImg!.alt = img.alt || '';
+      if (dialogCaption) dialogCaption.textContent = img.alt || '';
+      document.body.classList.add('has-dialog-open');
+      dialog!.showModal();
+    }
+
+    dialogClose.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialogImg.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('close', () => {
+      document.body.classList.remove('has-dialog-open');
+      dialogImg!.removeAttribute('src');
+    });
+  })();
+</script>

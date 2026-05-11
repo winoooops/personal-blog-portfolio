@@ -520,6 +520,103 @@ body.has-dialog-open .target {
   display: none;
 }
 
+/* Click-to-enlarge images inside .prose. Mirrors the CodeBlocks
+ * dialog pattern; wired by ImageBlocks.astro. */
+.prose img.prose-img-zoomable {
+  cursor: zoom-in;
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.prose img.prose-img-zoomable:hover,
+.prose img.prose-img-zoomable:focus-visible {
+  filter: brightness(1.05);
+  outline: 1px solid rgba(201, 165, 90, 0.4);
+  outline-offset: 4px;
+}
+
+.image-dialog {
+  background: rgba(14, 10, 4, 0.96);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(201, 165, 90, 0.25);
+  color: var(--ink);
+  padding: 0;
+  width: min(1600px, 96vw);
+  max-height: 96vh;
+  margin: auto;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6);
+}
+
+.image-dialog::backdrop {
+  background: rgba(10, 7, 3, 0.85);
+  backdrop-filter: blur(6px);
+}
+
+.image-dialog-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 22px;
+  border-bottom: 1px solid rgba(201, 165, 90, 0.2);
+}
+
+.image-dialog-caption {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  color: var(--gold-soft);
+  text-transform: uppercase;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.image-dialog-btn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  color: var(--gold);
+  background: transparent;
+  border: 1px solid var(--gold-soft);
+  padding: 5px 10px;
+  border-radius: 2px;
+  cursor: none;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.image-dialog-btn:hover {
+  background: rgba(40, 28, 12, 0.9);
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.image-dialog-body {
+  padding: 24px;
+  overflow: auto;
+  max-height: calc(96vh - 64px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-dialog-body img {
+  max-width: 100%;
+  max-height: calc(96vh - 110px);
+  height: auto;
+  width: auto;
+  border-radius: 4px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+body.has-dialog-open .image-dialog-body,
+body.has-dialog-open .image-dialog-body img {
+  cursor: zoom-out;
+}
+
 .prose ul, .prose ol {
   padding-left: 1.4em;
 }
