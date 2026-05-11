@@ -200,7 +200,7 @@ The general principle: **any harness that runs for more than a few iterations sh
 
 If there is one thing I would want a reader to take away from this exercise, it is this: **the frontier of agent capability is not in the models. It is in the constraints we wrap around them.**
 
-ReAct did not require GPT-4. It worked on GPT-3.5. `/goal` does not require o3-level reasoning. It works on the standard Codex model. What changed between 2022 and 2025 was not the model's raw capability — it was our understanding of how to structure the prompt so that the model's failures are visible and recoverable.
+ReAct did not require GPT-4. It worked on GPT-3.5. `/goal` does not require GPT-5.5 Pro-level reasoning. It works on the standard model powering Codex — GPT-5.5 today, GPT-5.4 a few weeks ago. What changed between 2022 and 2026 was not the model's raw capability — it was our understanding of how to structure the prompt so that the model's failures are visible and recoverable.
 
 The four techniques I extracted from Codex's prompt — untrusted-data wrapping, specific-verb checklists, uncertainty-as-not-done, and budget-exhaustion-is-not-completion — are not Codex-specific. They are **interface design patterns** that apply anywhere a model is asked to make a decision about whether work is finished:
 
