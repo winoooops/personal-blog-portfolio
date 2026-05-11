@@ -172,14 +172,6 @@ The schema is three fields:
 
 4. **No persistent state across sessions**: `/deliver` runs entirely within one Claude assistant turn. This is a deliberate constraint — it makes the skill usable anywhere, without requiring a database or file-based checkpoint system. The tradeoff is that long objectives may hit context limits; the iteration cap is the safety valve.
 
-### Aside: how the harness wires Claude Code's hooks
-
-The `read-only` sandbox for the grader is a *harness-level* constraint — written outside the prompt, enforced by infrastructure. The same idea shows up in the lifeline harness's hook layer, which adds two `PreToolUse` predicates that fire on every Bash command and every write to `feature_list.json`. The first is an allowlist; the second blocks any edit that removes a feature or rewrites a description. Both run as Python functions, registered to Claude Code two different ways — as `HookMatcher` callables under the SDK backend, and as subprocess commands (via `hook_runner.py`) under the CLI backend — so the rules live in one place and the wiring is interchangeable.
-
-A few details worth surfacing: the runner does a *fail-closed import* so a syntax error in `hooks.py` produces an explicit `block` rather than the silent allow that happens when Claude's CLI sees no stdout; the command string is `shlex.quote`'d so paths with spaces (Windows `C:\Program Files\...`, macOS `/Users/John Doe/...`) don't split under `sh -c` and skip the hook entirely; and "not our concern" is returned as `{}` rather than no output, because no-output defaults to ALLOW. These are the small infrastructure details that make the prompt-level discipline actually hold under real-world conditions.
-
-![Two PreToolUse hooks (Bash and Write/Edit on feature_list.json) routed through either the CLI subprocess runner or the SDK in-process callable, converging on the same Python predicates. The bottom row surfaces three safety properties: fail-closed import, shlex.quote on paths, no-decision-equals-ALLOW](/blog-assets/from-react-to-goal/lifeline-hooks.png)
-
 ---
 
 ## 4. Pairing mode, /lifeline:loop, and the orchestrator/coder/reviewer pattern
@@ -199,6 +191,8 @@ The `/lifeline:loop` harness is adapted from [Anthropic's autonomous-coding quic
 3. **Phase 3 (Cloud Review)**: Pushes to GitHub, creates/finds a PR, polls for cloud Codex review (via GitHub Action). If issues found, spawns a local fix loop before pushing again.
 
 The natural next step is to bring the full pattern back to `/deliver`: extend `/deliver pure` into the same orchestrator/coder/reviewer cycle `/lifeline:loop` uses, with the Codex grader supplying the "is this iteration done?" verdict in place of a separate reviewer pass. One pattern, three skills, one Markdown attribution to OpenAI.
+
+![The /lifeline toolkit — seven slash commands (planner, loop, deliver, review, request-pr, upsource-review, approve-pr) that compose into an end-to-end harness from design spec to merged PR. /deliver is the command analyzed in this post](/blog-assets/from-react-to-goal/lifeline-toolkit.png)
 
 ### What pairing mode means for harness engineering
 

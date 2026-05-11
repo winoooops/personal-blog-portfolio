@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #faf6ee; }
+  body {
+    width: 1200px;
+    padding: 64px 72px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #1f1a14;
+  }
+  .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7c6853;
+    margin-bottom: 22px;
+  }
+  .title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 64px;
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 18px;
+  }
+  .subtitle {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 20px;
+    line-height: 1.5;
+    color: #4d4337;
+    font-style: italic;
+    margin-bottom: 28px;
+    max-width: 980px;
+  }
+  .subtitle code {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(124, 104, 83, 0.12);
+    padding: 1px 6px;
+    font-style: normal;
+    font-size: 17px;
+  }
+  .bar {
+    width: 88px;
+    height: 4px;
+    background: #7c6853;
+    margin-bottom: 32px;
+  }
+  .toolkit-header {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 28px;
+    padding: 0 6px 14px;
+    border-bottom: 1px solid rgba(124, 104, 83, 0.3);
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #7c6853;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 28px;
+    padding: 18px 6px;
+    border-bottom: 1px solid rgba(124, 104, 83, 0.15);
+    align-items: start;
+  }
+  .row.featured {
+    background: rgba(184, 67, 47, 0.06);
+    border-left: 4px solid #b8432f;
+    padding-left: 18px;
+    padding-right: 12px;
+    margin-left: -10px;
+    margin-right: -4px;
+    border-bottom-color: rgba(184, 67, 47, 0.2);
+  }
+  .row:last-child { border-bottom: none; }
+  .cmd-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cmd-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    font-weight: 700;
+    color: #1f1a14;
+    letter-spacing: -0.005em;
+  }
+  .row.featured .cmd-name { color: #8a2f1e; }
+  .cmd-pair {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #7c6853;
+  }
+  .row.featured .cmd-pair { color: #b8432f; font-weight: 700; }
+  .cmd-tag {
+    font-family: 'Inter', sans-serif;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: #7c6853;
+    font-weight: 500;
+    font-style: italic;
+  }
+  .desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #2a2520;
+    padding-top: 2px;
+  }
+  .desc strong { font-weight: 700; color: #1f1a14; }
+  .desc code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px;
+    background: rgba(124, 104, 83, 0.1);
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: #4d4337;
+  }
+  .row.featured .desc code {
+    background: rgba(184, 67, 47, 0.1);
+    color: #8a2f1e;
+  }
+  .star {
+    display: inline-block;
+    color: #b8432f;
+    font-size: 14px;
+    margin-left: 6px;
+  }
+  .footer {
+    margin-top: 36px;
+    border-top: 1px solid rgba(124, 104, 83, 0.25);
+    padding-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-text {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    font-style: italic;
+    color: #2a2520;
+    max-width: 900px;
+    line-height: 1.5;
+  }
+  .footer-text strong {
+    font-weight: 700;
+    color: #1f1a14;
+    font-style: normal;
+  }
+  .footer-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7c6853;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+  <div class="meta">A Claude Code plugin · github.com/winoooops/lifeline</div>
+  <h1 class="title">The /lifeline toolkit.</h1>
+  <p class="subtitle">Seven slash commands that compose into an end-to-end harness: spec → loop → deliver → review → PR → approve. The <code>/deliver</code> command analyzed in this post is the newest of them, ported from OpenAI Codex's <code>/goal</code> templates.</p>
+  <div class="bar"></div>
+
+  <div class="toolkit-header">
+    <div>Command</div>
+    <div>What it does</div>
+  </div>
+
+  <div class="row">
+    <div class="cmd-cell">
+      <div class="cmd-name">/lifeline:planner</div>
+      <div class="cmd-pair">Phase · Design</div>
+      <div class="cmd-tag">Pairs with /superpowers:writing-plans</div>
+    </div>
+    <div class="desc">
+      <strong>Design-spec writer.</strong> Walks through clarifying questions → approaches → section-by-section design → <code>codex exec</code> review on the result, applies your chosen findings. Output lands in <code>docs/superpowers/specs/</code>.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="cmd-cell">
+      <div class="cmd-name">/lifeline:loop</div>
+      <div class="cmd-pair">Phase · Build</div>
+      <div class="cmd-tag">Spec → harness → PR</div>
+    </div>
+    <div class="desc">
+      <strong>Autonomous dev harness.</strong> Gathers requirements, generates <code>app_spec.md</code>, then runs the Coder + Reviewer inner loop per feature with cloud-Codex review after push. Project-agnostic — reads <code>CLAUDE.md</code> for stack-specific commands.
+    </div>
+  </div>
+
+  <div class="row featured">
+    <div class="cmd-cell">
+      <div class="cmd-name">/lifeline:deliver <span class="star">★</span></div>
+      <div class="cmd-pair">★ Featured · Goal loop</div>
+      <div class="cmd-tag">Pure mode + Paired mode</div>
+    </div>
+    <div class="desc">
+      <strong>Goal-driven in-session loop.</strong> Takes an objective, iterates Claude actions until a <em>completion audit</em> passes. <code>/deliver pair</code> swaps the audit for an independent <code>codex exec</code> grader running read-only — the Outcomes pattern in 50 lines of Markdown.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="cmd-cell">
+      <div class="cmd-name">/lifeline:review</div>
+      <div class="cmd-pair">Phase · Verify</div>
+      <div class="cmd-tag">Single pass · local</div>
+    </div>
+    <div class="desc">
+      <strong>Local Codex code review.</strong> Runs <code>npm run review</code> against the staged diff, parses findings from <code>.codex-reviews/latest.md</code>, and applies fixes. One pass per invocation — no polling.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="cmd-cell">
+      <div class="cmd-name">/lifeline:request-pr</div>
+      <div class="cmd-pair">Phase · Ship</div>
+      <div class="cmd-tag">Pairs with /lifeline:approve-pr</div>
+    </div>
+    <div class="desc">
+      <strong>PR opener.</strong> Auto-generates title + body from the commit list, refuses detached HEAD, dirty trees, or behind-upstream branches. Resolves base via <code>git config</code> / <code>gh repo</code> defaults.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="cmd-cell">
+      <div class="cmd-name">/lifeline:upsource-review</div>
+      <div class="cmd-pair">Phase · Iterate</div>
+      <div class="cmd-tag">Self-driving · cloud reviewers</div>
+    </div>
+    <div class="desc">
+      <strong>PR review fix-loop.</strong> Fetches findings from Claude Code Review + chatgpt-codex-connector, fixes them in atomic per-cycle batches, runs <code>codex verify</code> on the staged diff, replies + resolves threads, polls for the next review cycle.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="cmd-cell">
+      <div class="cmd-name">/lifeline:approve-pr</div>
+      <div class="cmd-pair">Phase · Finish</div>
+      <div class="cmd-tag">End-to-end merge</div>
+    </div>
+    <div class="desc">
+      <strong>PR finisher.</strong> Squash + delete remote branch, sync local main, delete the local feature branch, clean up associated git worktrees (safely — dirty/locked worktrees are preserved).
+    </div>
+  </div>
+
+  <div class="footer">
+    <div class="footer-text">One harness, <strong>seven commands</strong>. Spec writes itself, the loop builds, deliver finishes, review verifies, request-pr ships, upsource-review iterates, approve-pr closes the loop.</div>
+    <div class="footer-meta">winoooops.com<br>github.com/winoooops/lifeline</div>
+  </div>
+</body>
+</html>
