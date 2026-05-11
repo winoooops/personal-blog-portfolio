@@ -9,7 +9,7 @@ interface MenuLink {
 const contactHref = import.meta.env.PUBLIC_WEB3FORMS_KEY ? withBase('/contact/') : 'mailto:w.wang4869@gmail.com';
 
 const links: MenuLink[] = [
-  { label: 'Work', href: withBase('/') },
+  { label: 'Work', href: `${withBase('/')}#doctrine` },
   { label: 'Projects', href: `${withBase('/')}#projects` },
   { label: 'Blogs', href: withBase('/blog/') },
   { label: 'Contact', href: contactHref },
