@@ -9,7 +9,7 @@ export const profile = {
     'Best for collaboration on agentic AI tooling, full-stack work, and developer-experience projects. Replies usually within a few days.',
   links: [
     { label: 'GitHub', href: 'https://github.com/winoooops' },
-    { label: 'LinkedIn', href: 'https://linkedin.com/in/wei-wangcspractitioner' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/wei-wang-cspractitioner/' },
     { label: 'Email', href: 'mailto:w.wang4869@gmail.com' },
   ],
   highlights: [
