@@ -1,0 +1,87 @@
+---
+// Progressive enhancement for <pre> blocks inside .prose:
+//   • COPY button (top-right, fades in on hover) copies the raw text
+//   • VIEW button opens a full-screen <dialog> with the same code,
+//     a second COPY button, and a CLOSE button.
+// Wrapped in its own IIFE so a failure here cannot break the page.
+---
+
+<dialog class="code-dialog" id="code-dialog">
+  <div class="code-dialog-head">
+    <button type="button" class="code-dialog-btn" data-dialog-copy>COPY</button>
+    <button type="button" class="code-dialog-btn" data-dialog-close aria-label="Close">CLOSE</button>
+  </div>
+  <pre class="code-dialog-body"><code data-dialog-target></code></pre>
+</dialog>
+
+<script>
+  (function setupCodeBlocks() {
+    const proseBlocks = document.querySelectorAll<HTMLPreElement>('.prose pre');
+    if (!proseBlocks.length) return;
+
+    const dialog = document.getElementById('code-dialog') as HTMLDialogElement | null;
+    const dialogTarget = dialog?.querySelector<HTMLElement>('[data-dialog-target]');
+    const dialogClose = dialog?.querySelector<HTMLButtonElement>('[data-dialog-close]');
+    const dialogCopy = dialog?.querySelector<HTMLButtonElement>('[data-dialog-copy]');
+
+    if (!dialog || !dialogTarget || !dialogClose || !dialogCopy) return;
+
+    function flashLabel(btn: HTMLButtonElement, next: string, restoreMs = 1500) {
+      const original = btn.textContent ?? '';
+      btn.textContent = next;
+      setTimeout(() => {
+        btn.textContent = original;
+      }, restoreMs);
+    }
+
+    async function copyText(text: string, btn: HTMLButtonElement) {
+      try {
+        await navigator.clipboard.writeText(text);
+        flashLabel(btn, 'COPIED');
+      } catch {
+        flashLabel(btn, 'FAILED');
+      }
+    }
+
+    proseBlocks.forEach((pre) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'prose-pre-wrap';
+      pre.parentNode?.insertBefore(wrap, pre);
+      wrap.appendChild(pre);
+
+      const controls = document.createElement('div');
+      controls.className = 'prose-pre-controls';
+      wrap.appendChild(controls);
+
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'prose-pre-btn';
+      copyBtn.textContent = 'COPY';
+      copyBtn.addEventListener('click', () => {
+        copyText(pre.textContent ?? '', copyBtn);
+      });
+      controls.appendChild(copyBtn);
+
+      const viewBtn = document.createElement('button');
+      viewBtn.type = 'button';
+      viewBtn.className = 'prose-pre-btn';
+      viewBtn.textContent = 'VIEW';
+      viewBtn.addEventListener('click', () => {
+        const code = pre.querySelector('code');
+        dialogTarget!.innerHTML = code ? code.innerHTML : pre.innerHTML;
+        dialogTarget!.dataset.raw = pre.textContent ?? '';
+        dialog!.showModal();
+      });
+      controls.appendChild(viewBtn);
+    });
+
+    dialogClose.addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', (e) => {
+      if (e.target === dialog) dialog.close();
+    });
+    dialogCopy.addEventListener('click', () => {
+      const raw = dialogTarget!.dataset.raw ?? dialogTarget!.textContent ?? '';
+      copyText(raw, dialogCopy);
+    });
+  })();
+</script>

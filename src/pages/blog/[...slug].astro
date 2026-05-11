@@ -4,6 +4,7 @@ import Base from '../../layouts/Base.astro';
 import ScopeHUD from '../../components/ScopeHUD.astro';
 import Corners from '../../components/Corners.astro';
 import Reticle from '../../components/Reticle.astro';
+import CodeBlocks from '../../components/CodeBlocks.astro';
 import Giscus from '../../components/Giscus.astro';
 import { withBase } from '../../lib/paths';
 
@@ -52,4 +53,5 @@ const formattedDate = post.data.date.toLocaleDateString('en', {
       <Giscus />
     </aside>
   </article>
+  <CodeBlocks />
 </Base>
