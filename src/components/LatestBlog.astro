@@ -1,0 +1,126 @@
+---
+import { getCollection } from 'astro:content';
+import { withBase } from '../lib/paths';
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const latest = posts[0];
+
+function formatDate(d: Date): string {
+  return d
+    .toLocaleDateString('en', { month: 'short', year: 'numeric', timeZone: 'UTC' })
+    .toUpperCase();
+}
+---
+
+{latest && (
+  <section class="block reveal">
+    <div class="eyebrow">[ BLOGS // LATEST ]</div>
+    <h2>From the field.</h2>
+    <a class="latest-post" href={withBase(`/blog/${latest.id}/`)}>
+      <div class="latest-post-meta">
+        <span>{latest.data.tag}</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>{formatDate(latest.data.date)}</span>
+        <span class="sep" aria-hidden="true">·</span>
+        <span>{latest.data.readMin} MIN</span>
+        {latest.data.lang === 'zh' && (
+          <>
+            <span class="sep" aria-hidden="true">·</span>
+            <span class="lang-badge">中文</span>
+          </>
+        )}
+      </div>
+      <h3 class="latest-post-title">{latest.data.title}</h3>
+      <p class="latest-post-dek">{latest.data.dek}</p>
+      <span class="latest-post-cta">Read more →</span>
+    </a>
+  </section>
+)}
+
+<style>
+  .latest-post {
+    display: block;
+    margin-top: 40px;
+    padding: 32px;
+    border: 1px solid rgba(201, 165, 90, 0.2);
+    background: rgba(20, 15, 8, 0.4);
+    backdrop-filter: blur(8px);
+    text-decoration: none;
+    color: inherit;
+    border-radius: 4px;
+    transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s ease;
+  }
+
+  .latest-post:hover {
+    border-color: var(--gold);
+    background: rgba(40, 28, 12, 0.5);
+    transform: translateY(-2px);
+  }
+
+  .latest-post-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 18px;
+  }
+
+  .latest-post-meta .sep {
+    color: var(--gold-soft);
+    margin: 0 4px;
+  }
+
+  .latest-post-meta .lang-badge {
+    color: var(--gold);
+    border: 1px solid var(--gold-soft);
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+  }
+
+  .latest-post-title {
+    font-family: var(--font-display);
+    font-size: clamp(24px, 2.8vw, 34px);
+    font-weight: 400;
+    color: #fff;
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    margin: 0 0 16px;
+    transition: color 0.3s ease;
+  }
+
+  .latest-post:hover .latest-post-title {
+    color: var(--gold);
+  }
+
+  .latest-post-dek {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    color: rgba(240, 230, 210, 0.78);
+    margin: 0 0 24px;
+    max-width: 720px;
+  }
+
+  .latest-post-cta {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    transition: color 0.3s ease;
+  }
+
+  .latest-post:hover .latest-post-cta {
+    color: #fff;
+  }
+</style>
