@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    {"id": "pure-title", "type": "text", "text": "**PURE MODE**\n/lifeline:deliver <objective>\n*Single agent, self-audit*", "x": -700, "y": -500, "width": 360, "height": 110},
+    {"id": "pure-claude", "type": "text", "text": "**Claude**\nOrchestrator + Coder + Reviewer", "x": -700, "y": -340, "width": 360, "height": 110, "color": "3"},
+    {"id": "pure-orch-label", "type": "text", "text": "Orchestrator\n(skill body)", "x": -800, "y": -200, "width": 140, "height": 64, "color": "6"},
+    {"id": "pure-coder-label", "type": "text", "text": "Coder\n(Claude turn)", "x": -640, "y": -100, "width": 140, "height": 64, "color": "6"},
+    {"id": "pure-rev-label", "type": "text", "text": "Reviewer\n(self-audit)", "x": -440, "y": -200, "width": 140, "height": 64, "color": "6"},
+
+    {"id": "pair-title", "type": "text", "text": "**PAIRED MODE**\n/lifeline:deliver pair <objective>\n*External judge, no shared context*", "x": 200, "y": -500, "width": 380, "height": 110},
+    {"id": "pair-orch", "type": "text", "text": "**Orchestrator**\nSkill body (bash/python)\nspawns + collects verdicts", "x": 240, "y": -340, "width": 300, "height": 110, "color": "6"},
+    {"id": "pair-coder", "type": "text", "text": "**Coder**\nClaude (writes/edits)\nfull conversation context", "x": 60, "y": -120, "width": 280, "height": 110, "color": "5"},
+    {"id": "pair-reviewer", "type": "text", "text": "**Reviewer**\ncodex exec (read-only)\nno history, JSON schema out", "x": 460, "y": -120, "width": 300, "height": 110, "color": "1"},
+
+    {"id": "caption", "type": "text", "text": "Same triangle, different process boundaries.\nPaired mode wins because the reviewer cannot rationalize the coder's mistakes — it has no stake in the existing work.", "x": -250, "y": 80, "width": 720, "height": 90}
+  ],
+  "edges": [
+    {"id": "p-oc", "fromNode": "pair-orch", "fromSide": "bottom", "toNode": "pair-coder", "toSide": "top", "toEnd": "arrow", "label": "spawn"},
+    {"id": "p-or", "fromNode": "pair-orch", "fromSide": "bottom", "toNode": "pair-reviewer", "toSide": "top", "toEnd": "arrow", "label": "spawn"},
+    {"id": "p-cr", "fromNode": "pair-coder", "fromSide": "right", "toNode": "pair-reviewer", "toSide": "left", "toEnd": "arrow", "label": "diff + state"},
+    {"id": "p-rc", "fromNode": "pair-reviewer", "fromSide": "top", "toNode": "pair-orch", "toSide": "bottom", "toEnd": "arrow", "label": "verdict JSON"}
+  ]
+}

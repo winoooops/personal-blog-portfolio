@@ -111,6 +111,8 @@ I sat with this prompt for a while and rewrote it for Claude Code. Then I came a
 
 The habits are the guardrails; the techniques are the enforcement.
 
+![Two Habits, Four Techniques — MinLi's progressive-discipline framework: two posture habits and four enforcement techniques behind the Codex /goal prompt](/blog-assets/from-react-to-goal/two-habits-four-techniques.png)
+
 ### Connecting the two: from external tool to internal discipline
 
 ReAct and `/goal` are not two unrelated tricks. They are the same design pattern applied to different failure modes at different stages of agent maturity.
@@ -120,6 +122,8 @@ ReAct solved the **external-grounding problem**: the model was hallucinating fac
 `/goal` solves the **completion-discipline problem**: the model was declaring victory prematurely. The solution was to carve out a slot in the prompt for an `audit` that *must* be performed against real evidence before the `update_goal` tool can be called.
 
 The arc is: first we taught models to reach outside themselves for information. Now we are teaching them to reach outside themselves for judgment. The next step — which the paired mode begins to explore — is teaching the *system* to reach outside the single session for an independent judge.
+
+![Side-by-side comparison of the ReAct (2022) and /goal (2026) loops: same shape, but the highlighted slot moves from Observation to Audit](/blog-assets/from-react-to-goal/react-vs-goal-loops.png)
 
 ---
 
@@ -168,6 +172,14 @@ The schema is three fields:
 
 4. **No persistent state across sessions**: `/deliver` runs entirely within one Claude assistant turn. This is a deliberate constraint — it makes the skill usable anywhere, without requiring a database or file-based checkpoint system. The tradeoff is that long objectives may hit context limits; the iteration cap is the safety valve.
 
+### Aside: how the harness wires Claude Code's hooks
+
+The `read-only` sandbox for the grader is a *harness-level* constraint — written outside the prompt, enforced by infrastructure. The same idea shows up in the lifeline harness's hook layer, which adds two `PreToolUse` predicates that fire on every Bash command and every write to `feature_list.json`. The first is an allowlist; the second blocks any edit that removes a feature or rewrites a description. Both run as Python functions, registered to Claude Code two different ways — as `HookMatcher` callables under the SDK backend, and as subprocess commands (via `hook_runner.py`) under the CLI backend — so the rules live in one place and the wiring is interchangeable.
+
+A few details worth surfacing: the runner does a *fail-closed import* so a syntax error in `hooks.py` produces an explicit `block` rather than the silent allow that happens when Claude's CLI sees no stdout; the command string is `shlex.quote`'d so paths with spaces (Windows `C:\Program Files\...`, macOS `/Users/John Doe/...`) don't split under `sh -c` and skip the hook entirely; and "not our concern" is returned as `{}` rather than no output, because no-output defaults to ALLOW. These are the small infrastructure details that make the prompt-level discipline actually hold under real-world conditions.
+
+![Two PreToolUse hooks (Bash and Write/Edit on feature_list.json) routed through either the CLI subprocess runner or the SDK in-process callable, converging on the same Python predicates. The bottom row surfaces three safety properties: fail-closed import, shlex.quote on paths, no-decision-equals-ALLOW](/blog-assets/from-react-to-goal/lifeline-hooks.png)
+
 ---
 
 ## 4. Pairing mode, /lifeline:loop, and the orchestrator/coder/reviewer pattern
@@ -175,6 +187,8 @@ The schema is three fields:
 This isn't the first time I've used the triangle of **orchestrator / coder / reviewer**. My existing `/lifeline:loop` skill runs the Anthropic-style autonomous-coding harness: a Python **orchestrator** spawns a **coder** (Claude via `claude -p`), then a **reviewer** (Codex CLI) judges each feature, with findings fed back until clean. Three roles, one pattern.
 
 `/deliver pair` is the same triangle, collapsed to a single feature. The orchestrator is the skill body, the coder is the Claude session running it, the reviewer is `codex exec --output-schema`.
+
+![Pure mode vs paired mode: in pure, Claude plays all three roles inside one circle; in paired, the orchestrator is the skill body, the coder is Claude, and the reviewer is codex exec running with read-only sandbox and no shared history](/blog-assets/from-react-to-goal/orchestrator-coder-reviewer.png)
 
 ### The lineage of /lifeline:loop
 

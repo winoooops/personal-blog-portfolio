@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Two Habits, Four Techniques</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #faf6ee; }
+  body {
+    width: 1080px;
+    padding: 64px 72px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #2a2520;
+  }
+  .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7c6853;
+    margin-bottom: 28px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+  .meta-sep { color: #c9b8a3; }
+  .title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 76px;
+    line-height: 0.98;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #1f1a14;
+    margin-bottom: 24px;
+  }
+  .subtitle {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 22px;
+    line-height: 1.4;
+    color: #4d4337;
+    max-width: 760px;
+    font-weight: 400;
+    font-style: italic;
+    margin-bottom: 36px;
+  }
+  .bar {
+    width: 96px;
+    height: 5px;
+    background: #7c6853;
+    margin-bottom: 40px;
+  }
+  .section-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: #7c6853;
+    margin-bottom: 16px;
+  }
+  .habits-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  .habit {
+    background: #f3ecdd;
+    padding: 24px 26px;
+    border-left: 3px solid #7c6853;
+  }
+  .habit-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    color: #7c6853;
+    margin-bottom: 8px;
+  }
+  .habit-text {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 22px;
+    line-height: 1.25;
+    color: #2a2520;
+    font-weight: 600;
+  }
+  .divider {
+    height: 1px;
+    background: rgba(124, 104, 83, 0.25);
+    margin: 4px 0 40px;
+  }
+  .tech-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 36px;
+    margin-bottom: 44px;
+  }
+  .tech {
+    padding-top: 4px;
+  }
+  .tech-num {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 46px;
+    line-height: 0.9;
+    color: #b8432f;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .tech-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #1f1a14;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .tech-body {
+    font-family: 'Inter', sans-serif;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: #4d4337;
+  }
+  .tech-body code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    background: rgba(184, 67, 47, 0.08);
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: #8a2f1e;
+  }
+  .quote-block {
+    background: #f3ecdd;
+    border-left: 4px solid #b8432f;
+    padding: 28px 32px;
+    margin-bottom: 28px;
+  }
+  .quote-text {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 19px;
+    line-height: 1.5;
+    color: #2a2520;
+    font-style: italic;
+    margin-bottom: 12px;
+  }
+  .quote-attr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7c6853;
+  }
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(124, 104, 83, 0.25);
+    padding-top: 20px;
+  }
+  .footer-left {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7c6853;
+  }
+  .footer-right {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #1f1a14;
+  }
+  .endmark {
+    color: #b8432f;
+    font-size: 18px;
+    margin-right: 8px;
+  }
+</style>
+</head>
+<body>
+  <div class="meta">
+    <span>From ReAct to /goal</span>
+    <span class="meta-sep">·</span>
+    <span>OpenAI Codex prompt engineering</span>
+  </div>
+  <h1 class="title">Two Habits,<br>Four Techniques.</h1>
+  <p class="subtitle">MinLi's progressive-discipline framework — what makes Codex's 50-line <code style="font-family:'JetBrains Mono',monospace;font-size:18px;background:rgba(124,104,83,0.1);padding:1px 6px;border-radius:2px;">/goal</code> prompt industrial-grade.</p>
+  <div class="bar"></div>
+
+  <div class="section-label">The Two Habits — Posture</div>
+  <div class="habits-grid">
+    <div class="habit">
+      <div class="habit-num">Habit 01</div>
+      <div class="habit-text">Start with a verb, not a role description.</div>
+    </div>
+    <div class="habit">
+      <div class="habit-num">Habit 02</div>
+      <div class="habit-text">State as lists, not sentences.</div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section-label">The Four Techniques — Enforcement</div>
+  <div class="tech-grid">
+    <div class="tech">
+      <div class="tech-num">01</div>
+      <div class="tech-name">Type your inputs</div>
+      <div class="tech-body">Wrap user content in <code>&lt;untrusted_objective&gt;</code> tags. Label data as data, not instructions. One XML tag stops prompt injection.</div>
+    </div>
+    <div class="tech">
+      <div class="tech-num">02</div>
+      <div class="tech-name">Replace adverbs with nouns</div>
+      <div class="tech-body">Drop "carefully verify." Enumerate the noun list: <em>every requirement, file, command, test, gate, deliverable</em>. A list is a checklist; an adverb isn't.</div>
+    </div>
+    <div class="tech">
+      <div class="tech-num">03</div>
+      <div class="tech-name">Flip the default</div>
+      <div class="tech-body">One sentence: <em>"Treat uncertainty as not achieved."</em> Move the decision boundary, not the personality.</div>
+    </div>
+    <div class="tech">
+      <div class="tech-num">04</div>
+      <div class="tech-name">Stop ≠ complete</div>
+      <div class="tech-body">Budget exhausted is not "done." Ship a separate <code>budget_limit.md</code> so the model can't claim victory under pressure.</div>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <p class="quote-text">"Every ban corresponds to an empirically observed failure. That's the gap between industrial-grade prompts and ordinary ones."</p>
+    <p class="quote-attr">— 实践哥 MinLi · @MinLiBuilds</p>
+  </div>
+
+  <div class="footer">
+    <div class="footer-left"><span class="endmark">∎</span>Will Wang · 2026</div>
+    <div class="footer-right">winoooops.com</div>
+  </div>
+</body>
+</html>

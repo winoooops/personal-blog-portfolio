@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: #faf6ee; }
+  body {
+    width: 1400px;
+    padding: 60px 64px 56px;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: #1f1a14;
+  }
+  .meta { font-family: 'JetBrains Mono', monospace; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: #7c6853; margin-bottom: 22px; }
+  .title { font-family: 'Source Serif 4', Georgia, serif; font-size: 56px; line-height: 1; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; }
+  .subtitle { font-family: 'Source Serif 4', Georgia, serif; font-size: 20px; line-height: 1.45; color: #4d4337; font-style: italic; margin-bottom: 36px; max-width: 1100px; }
+  .bar { width: 88px; height: 4px; background: #7c6853; margin-bottom: 40px; }
+  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+  .col-header { margin-bottom: 18px; }
+  .col-tag { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase; color: #7c6853; margin-bottom: 6px; }
+  .col-title { font-family: 'Source Serif 4', Georgia, serif; font-size: 30px; font-weight: 700; letter-spacing: -0.01em; }
+  .col-sub { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #8a6f4a; margin-top: 4px; }
+  .diagram { position: relative; height: 460px; }
+
+  /* Pure mode: one big circle */
+  .pure-blob { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+               width: 340px; height: 340px; border-radius: 50%;
+               background: #f3ecdd; border: 3px solid #7c6853;
+               display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+  .pure-center { font-family: 'Source Serif 4', Georgia, serif; font-size: 38px; font-weight: 700; color: #1f1a14; }
+  .pure-sub { font-family: 'Inter', sans-serif; font-size: 14.5px; color: #4d4337; max-width: 240px; text-align: center; line-height: 1.4; }
+  .pure-roles { display: flex; gap: 8px; margin-top: 4px; }
+  .pure-roles span { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase; color: #7c6853;
+                     border: 1px solid #c9b8a3; padding: 4px 8px; border-radius: 12px; }
+
+  /* Paired mode: three nodes */
+  .pair-node { position: absolute; padding: 14px 16px; background: #fffaf0;
+               border: 2px solid #7c6853; border-radius: 6px;
+               box-shadow: 3px 3px 0 rgba(124, 104, 83, 0.25);
+               width: 220px; }
+  .pair-node.orch { border-color: #6a3da6; left: 50%; top: 0; transform: translateX(-50%); background: #f4eef9; }
+  .pair-node.coder { border-color: #1f6f8b; left: 0; bottom: 30px; background: #ebf3f7; }
+  .pair-node.reviewer { border-color: #b8432f; right: 0; bottom: 30px; background: #f6e9e4; }
+  .pair-role { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.22em; text-transform: uppercase; color: #7c6853; margin-bottom: 4px; }
+  .pair-name { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; color: #1f1a14; margin-bottom: 6px; }
+  .pair-desc { font-family: 'Inter', sans-serif; font-size: 13px; color: #4d4337; line-height: 1.4; }
+
+  .pair-svg { position: absolute; inset: 0; pointer-events: none; }
+
+  .footer {
+    margin-top: 36px;
+    border-top: 1px solid rgba(124, 104, 83, 0.25);
+    padding-top: 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-text {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 18px;
+    font-style: italic;
+    color: #2a2520;
+    max-width: 950px;
+    line-height: 1.5;
+  }
+  .footer-text strong {
+    font-weight: 700;
+    color: #1f1a14;
+    font-style: normal;
+  }
+  .footer-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: #7c6853;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+  <div class="meta">/lifeline:deliver · two modes of the same pattern</div>
+  <h1 class="title">The Orchestrator / Coder / Reviewer triangle.</h1>
+  <p class="subtitle">Pure mode collapses all three roles into a single agent that self-audits. Paired mode splits them across processes — the reviewer is <code style="font-family:'JetBrains Mono',monospace;background:rgba(124,104,83,0.12);padding:1px 6px;font-style:normal;">codex exec</code> running read-only, with no access to the coder's conversation history.</p>
+  <div class="bar"></div>
+  <div class="columns">
+    <div>
+      <div class="col-header">
+        <div class="col-tag">Pure mode</div>
+        <div class="col-title">Collapsed</div>
+        <div class="col-sub">/lifeline:deliver &lt;objective&gt;</div>
+      </div>
+      <div class="diagram">
+        <div class="pure-blob">
+          <div class="pure-center">Claude</div>
+          <div class="pure-sub">Single agent. Plays all three roles using the adapted continuation.md prompt.</div>
+          <div class="pure-roles">
+            <span>orch</span><span>coder</span><span>reviewer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="col-header">
+        <div class="col-tag">Paired mode</div>
+        <div class="col-title">Expanded</div>
+        <div class="col-sub">/lifeline:deliver pair &lt;objective&gt;</div>
+      </div>
+      <div class="diagram">
+        <svg class="pair-svg" viewBox="0 0 600 460" preserveAspectRatio="none">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#7c6853"/>
+            </marker>
+          </defs>
+          <line x1="270" y1="80" x2="130" y2="320" stroke="#7c6853" stroke-width="1.8" stroke-dasharray="0" marker-end="url(#arr)"/>
+          <line x1="330" y1="80" x2="470" y2="320" stroke="#7c6853" stroke-width="1.8" marker-end="url(#arr)"/>
+          <line x1="230" y1="360" x2="370" y2="360" stroke="#7c6853" stroke-width="1.8" stroke-dasharray="6 6" marker-end="url(#arr)"/>
+          <line x1="470" y1="320" x2="320" y2="105" stroke="#7c6853" stroke-width="1.8" stroke-dasharray="0" marker-end="url(#arr)"/>
+          <text x="170" y="200" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" fill="#7c6853" transform="rotate(60 170 200)">SPAWN</text>
+          <text x="395" y="200" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" fill="#7c6853" transform="rotate(-60 395 200)">SPAWN</text>
+          <text x="300" y="376" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" fill="#7c6853" text-anchor="middle">DIFF + STATE</text>
+          <text x="425" y="220" font-family="JetBrains Mono, monospace" font-size="11" letter-spacing="2" fill="#b8432f" transform="rotate(-58 425 220)">VERDICT JSON</text>
+        </svg>
+        <div class="pair-node orch">
+          <div class="pair-role">Orchestrator</div>
+          <div class="pair-name">Skill body</div>
+          <div class="pair-desc">Bash/Python. Spawns roles, collects verdicts, decides loop vs exit.</div>
+        </div>
+        <div class="pair-node coder">
+          <div class="pair-role">Coder</div>
+          <div class="pair-name">Claude</div>
+          <div class="pair-desc">Full conversation context. Writes, edits, runs tests, iterates.</div>
+        </div>
+        <div class="pair-node reviewer">
+          <div class="pair-role">Reviewer</div>
+          <div class="pair-name">codex exec</div>
+          <div class="pair-desc">--sandbox read-only. No history. JSON-schema output.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">
+    <div class="footer-text">Paired mode wins because the reviewer <strong>cannot rationalize</strong> the coder's mistakes — it has no stake in the coherence of the existing work.</div>
+    <div class="footer-meta">winoooops.com<br>2026</div>
+  </div>
+</body>
+</html>
