@@ -9,6 +9,7 @@ source: obsidian
 obsidianPath: "winoooops/wiki/concepts/Shared Layout Animations"
 ---
 import MotionLayoutDock from '../../demos/motion-layout-dock/index.astro';
+import VimeflowWorkspace from '../../demos/vimeflow-workspace/index.astro';
 
 One underappreciated problem in modern UI development is not *getting* layouts to work — it is getting them to *transition* gracefully. This post is meant as an exploration of how Motion (formerly Framer Motion) approaches this, and why its mental model differs from both raw CSS and traditional animation libraries.
 
@@ -65,7 +66,7 @@ function DockDemo() {
 
 The same React/CSS layout change still happens. But Motion measures the before and after bounding boxes and animates the difference. You still design the layout; Motion just makes the *transition* between layouts feel continuous.
 
-The browser now ships a native version of the same idea — the **View Transitions API** — which is what the live demo below uses. No animation library, no Motion, no React. Click a position; the dock and terminal morph between layouts because each pane has a `view-transition-name` set in CSS. The browser snapshots before + after, pairs same-named elements, and animates the difference. Motion does this with FLIP-in-JS; the View Transitions API does it natively.
+Below is the smallest possible version: a terminal pane and a dock, each wrapped in `motion.div layout`. The dock also carries `layoutId="dock-demo-dock"` — Motion treats it as the same visual object across render positions, so flipping between bottom / top / left / right animates rather than snaps. The full Vimeflow skeleton in the Demo Walkthrough scales the same pattern to five layouts and five dock positions.
 
 <MotionLayoutDock />
 
@@ -214,6 +215,10 @@ These control:
 - **`layoutId`**: Terminal split — `single`, `vsplit`, `hsplit`, `threeRight`, `quad`
 - **`dockPosition`**: Editor/diff dock position — `hidden`, `bottom`, `left`, `right`, `top`
 - **`drawerMode`**: Dock content — `editor` or `diff`
+
+Here is the same skeleton — rebuilt in vanilla TypeScript with the View Transitions API instead of Motion. Cycle the **Pane layout** and **Dock** controls and watch how panes morph between grid areas. Each pane carries its own `view-transition-name`, so the browser pairs old and new snapshots the same way `layoutId` does in Motion.
+
+<VimeflowWorkspace />
 
 ### Workspace Wrapper
 

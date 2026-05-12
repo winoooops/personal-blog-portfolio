@@ -20,3 +20,30 @@
   --demo-duration: 220ms;
   --demo-easing: cubic-bezier(0.32, 0.72, 0, 1);
 }
+
+/* The site uses a custom-cursor reticle (#target / .target) and hides
+ * the native cursor globally (base.css: `*, *::before, *::after { cursor: none }`).
+ * That reads as overlay distraction inside the demos. When hovering
+ * any demo we (a) hide the reticle entirely and (b) restore native
+ * cursor behavior so interactive elements feel right. */
+body:has(.demo-frame:hover) .target {
+  display: none;
+}
+
+.demo-frame,
+.demo-frame *,
+.demo-frame *::before,
+.demo-frame *::after {
+  cursor: auto;
+}
+
+.demo-frame button,
+.demo-frame a {
+  cursor: pointer;
+}
+
+.demo-frame input,
+.demo-frame textarea,
+.demo-frame [contenteditable] {
+  cursor: text;
+}

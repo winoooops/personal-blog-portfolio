@@ -1,64 +1,17 @@
 ---
 import DemoFrame from '../shared/DemoFrame.astro';
-
-const positions = ['bottom', 'top', 'left', 'right'] as const;
-type Position = (typeof positions)[number];
-const initial: Position = 'bottom';
+import DockDemo from './DockDemo.tsx';
 ---
 
 <DemoFrame
-  eyebrow="Layout transition"
-  title="Dock position — same content, four layouts"
+  eyebrow="Motion · the smallest version"
+  title="One dock, four positions"
   source="https://github.com/winoooops/personal-blog-portfolio/tree/main/src/demos/motion-layout-dock"
 >
-  <div class="dock-demo" data-demo-init="motion-layout-dock">
-    <div class="dock-demo__controls" role="group" aria-label="Dock position">
-      {positions.map((pos) => (
-        <button
-          type="button"
-          class="dock-demo__btn"
-          data-position={pos}
-          aria-pressed={pos === initial ? 'true' : 'false'}
-        >
-          {pos}
-        </button>
-      ))}
-    </div>
-
-    <div class="dock-demo__workspace" data-dock={initial} aria-live="polite">
-      <div class="dock-demo__pane dock-demo__pane--terminal" data-pane="terminal">
-        <div class="dock-demo__pane-head">
-          <span class="dock-demo__pane-dot" aria-hidden="true"></span>
-          <span class="dock-demo__pane-label">Terminal</span>
-        </div>
-        <div class="dock-demo__pane-body">
-          <div class="dock-demo__bar" style="width: 72%"></div>
-          <div class="dock-demo__bar" style="width: 54%"></div>
-          <div class="dock-demo__bar" style="width: 86%"></div>
-          <div class="dock-demo__bar" style="width: 42%"></div>
-        </div>
-      </div>
-
-      <div class="dock-demo__pane dock-demo__pane--dock" data-pane="dock">
-        <div class="dock-demo__pane-head">
-          <span class="dock-demo__pane-dot dock-demo__pane-dot--accent" aria-hidden="true"></span>
-          <span class="dock-demo__pane-label">Editor</span>
-        </div>
-        <div class="dock-demo__pane-body">
-          <div class="dock-demo__bar" style="width: 64%"></div>
-          <div class="dock-demo__bar" style="width: 78%"></div>
-          <div class="dock-demo__bar" style="width: 48%"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="dock-demo__caption">
-      <span class="dock-demo__caption-key">view-transition-name</span> keeps each pane visually continuous as the grid reflows.
-    </div>
-  </div>
+  <DockDemo client:visible />
 </DemoFrame>
 
-<style>
+<style is:global>
   @import '../shared/demo-tokens.css';
   @import './demo.css';
 </style>

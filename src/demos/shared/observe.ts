@@ -8,7 +8,9 @@
 type DemoInit = (root: HTMLElement) => void | Promise<void>;
 
 const demos: Record<string, () => Promise<{ default: DemoInit }>> = {
-  'motion-layout-dock': () => import('../motion-layout-dock/demo.ts'),
+  // Add vanilla demo entries here as `<name>: () => import('../<name>/demo.ts')`.
+  // React/Motion demos (e.g. motion-layout-dock, vimeflow-workspace) mount via
+  // Astro's client:visible directive instead and don't appear in this registry.
 };
 
 const seen = new WeakSet<Element>();

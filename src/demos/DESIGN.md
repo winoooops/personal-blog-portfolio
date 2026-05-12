@@ -67,12 +67,36 @@ This means the markup is in the page from page load, layout reserves the space, 
 
 A demo belongs in `src/demos/` only if:
 
-- ✅ Uses only browser-native APIs (no React/Vue/Motion/D3 etc. imports)
+- ✅ Uses only browser-native APIs (no React/Vue/Motion/D3 etc. imports), **OR**
+  the post itself is specifically teaching the framework's API (see "Framework
+  escape hatch" below).
 - ✅ Has no backend or persistence (no API, no localStorage state that survives across sessions)
 - ✅ Fits in ≤ ~500 lines of code (CSS + TS combined)
 - ✅ Is the right pedagogical fit — the demo *is* the lesson
 
 If any of those fail, the demo becomes a separate project deployed to Vercel and embedded via iframe at a subdomain (`demo-<name>.winoooops.com`). See `AGENTS.md` for that escape hatch.
+
+## Framework escape hatch (use sparingly)
+
+When a post is specifically teaching the API of a particular framework
+(e.g., the Motion / framer-motion `layout` and `layoutId` post), the
+"no npm deps" rule yields to pedagogical fidelity. The reader needs
+to see the actual framework code, not an analog.
+
+The pattern:
+
+1. Implement the demo as an Astro React island (`Workspace.tsx` lives
+   alongside the demo's `index.astro`).
+2. Wrap with `<Workspace client:visible />` so the framework JS only
+   loads when the demo scrolls into view.
+3. Astro's per-route code-splitting means other blog pages never
+   include the framework bundle — only the post that imports the demo
+   pays the cost.
+4. Document the framework rationale in the demo's own intro comments.
+
+This has been exercised once so far, for `src/demos/vimeflow-workspace/`
+(Motion / framer-motion). Treat that as the template, not the norm.
+Defaults stay vanilla.
 
 ## Accessibility floor
 

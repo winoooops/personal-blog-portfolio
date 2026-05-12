@@ -1,0 +1,18 @@
+---
+import DemoFrame from '../shared/DemoFrame.astro';
+import Workspace from './Workspace.tsx';
+---
+
+<DemoFrame
+  eyebrow="Vimeflow workspace"
+  title="Workspace skeleton — five layouts × five dock positions"
+  source="https://github.com/winoooops/personal-blog-portfolio/tree/main/src/demos/vimeflow-workspace"
+  note='A stripped-down slice of <a href="https://github.com/winoooops/vimeflow" target="_blank" rel="noopener">vimeflow</a>, a coding-agent control plane I am building. Uses Motion (<code>motion.div layout</code>, <code>layoutId</code>, <code>AnimatePresence</code>) — the same API this post walks through. The React bundle only loads when this demo scrolls into view.'
+>
+  <Workspace client:visible />
+</DemoFrame>
+
+<style is:global>
+  @import '../shared/demo-tokens.css';
+  @import './demo.css';
+</style>

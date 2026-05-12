@@ -3,6 +3,8 @@ import { defineConfig } from 'astro/config';
 
 import mdx from '@astrojs/mdx';
 
+import react from '@astrojs/react';
+
 const site = process.env.PUBLIC_SITE_URL || 'https://example.com';
 const base = process.env.PUBLIC_BASE_PATH || undefined;
 
@@ -17,5 +19,5 @@ export default defineConfig({
     },
   },
 
-  integrations: [mdx()],
+  integrations: [mdx(), react()],
 });

@@ -1,30 +1,52 @@
-/* motion-layout-dock — scoped styles. Class names prefixed .dock-demo.
- * Loaded as global from index.astro so panes Motion mounts at runtime
- * pick up the styling without Astro CID attributes. */
+/* vimeflow-workspace — scoped styles. Class names prefixed .vw-demo.
+ * Loaded as global from index.astro (so panes Motion mounts at runtime
+ * still pick up the styling, no Astro CID needed). */
 
-.dock-demo {
+.vw-demo {
   font-family: var(--demo-mono);
   color: var(--demo-fg);
   font-size: 12px;
 }
 
-.dock-demo__controls {
+.vw-demo__controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.vw-demo__group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.vw-demo__group-label {
+  font-family: var(--demo-mono);
+  font-size: 10px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--demo-fg-muted);
+  min-width: 96px;
+}
+
+.vw-demo__btn-row {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 12px;
 }
 
-.dock-demo__btn {
+.vw-demo__btn {
   font-family: var(--demo-mono);
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   text-transform: lowercase;
   background: var(--demo-surface-2);
   color: var(--demo-fg-muted);
   border: 1px solid transparent;
   border-radius: 6px;
-  padding: 7px 12px;
+  padding: 7px 11px;
   cursor: pointer;
   transition:
     background var(--demo-duration) var(--demo-easing),
@@ -32,34 +54,49 @@
     border-color var(--demo-duration) var(--demo-easing);
 }
 
-.dock-demo__btn:hover {
+.vw-demo__btn:hover {
   color: var(--demo-fg);
   border-color: rgba(203, 166, 247, 0.3);
 }
 
-.dock-demo__btn[aria-pressed="true"] {
+.vw-demo__btn[aria-pressed="true"] {
   background: var(--demo-accent);
   color: var(--demo-bg);
   border-color: var(--demo-accent);
 }
 
-.dock-demo__btn:focus-visible {
+.vw-demo__btn--alt[aria-pressed="true"] {
+  background: var(--demo-accent-2);
+  color: var(--demo-bg);
+  border-color: var(--demo-accent-2);
+}
+
+.vw-demo__btn:focus-visible {
   outline: 2px solid var(--demo-accent);
   outline-offset: 2px;
 }
 
-/* Outer workspace — flex container. React component sets
+/* Outer workspace — a flex container. React component sets
  * flexDirection inline based on dock position. */
-.dock-demo__workspace {
+.vw-demo__workspace {
   gap: var(--demo-gap);
   background: var(--demo-bg);
   padding: var(--demo-gap);
   border-radius: var(--demo-radius);
-  height: 320px;
+  height: 380px;
   overflow: hidden;
 }
 
-.dock-demo__pane {
+/* Inner pane grid — Motion sets gridTemplate* inline. */
+.vw-demo__grid {
+  display: grid;
+  gap: var(--demo-gap);
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.vw-demo__pane {
   background: var(--demo-surface);
   border-radius: var(--demo-radius);
   padding: 10px 12px;
@@ -71,22 +108,18 @@
   min-height: 0;
 }
 
-.dock-demo__pane--terminal {
-  flex: 1;
-}
-
-.dock-demo__pane--dock {
+.vw-demo__pane--dock {
   background: var(--demo-surface-2);
   flex-shrink: 0;
 }
 
-.dock-demo__pane-head {
+.vw-demo__pane-head {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.dock-demo__pane-dot {
+.vw-demo__pane-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -94,36 +127,36 @@
   flex-shrink: 0;
 }
 
-.dock-demo__pane-dot--active { background: var(--demo-accent-2); }
-.dock-demo__pane-dot--accent { background: var(--demo-accent); }
+.vw-demo__pane-dot--active { background: var(--demo-accent-2); }
+.vw-demo__pane-dot--accent { background: var(--demo-accent); }
 
-.dock-demo__pane-label {
+.vw-demo__pane-label {
   font-size: 11px;
   letter-spacing: 0.04em;
   color: var(--demo-fg);
 }
 
-.dock-demo__pane-body {
+.vw-demo__pane-body {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.dock-demo__bar {
+.vw-demo__bar {
   height: 8px;
   border-radius: 3px;
   background: rgba(138, 130, 153, 0.22);
 }
 
-.dock-demo__caption {
-  margin-top: 12px;
+.vw-demo__caption {
+  margin-top: 14px;
   font-family: 'Inter', system-ui, sans-serif;
   font-size: 12px;
   color: var(--demo-fg-muted);
   line-height: 1.5;
 }
 
-.dock-demo__caption code {
+.vw-demo__caption code {
   font-family: var(--demo-mono);
   font-size: 11px;
   background: rgba(203, 166, 247, 0.12);
@@ -132,6 +165,9 @@
   color: var(--demo-accent);
 }
 
+/* Reduced motion: Motion honors prefers-reduced-motion when the user
+ * sets MotionConfig reducedMotion="user", but for safety we also flag
+ * any CSS-driven transitions on the panes. */
 @media (prefers-reduced-motion: reduce) {
-  .dock-demo__btn { transition-duration: 1ms; }
+  .vw-demo__btn { transition-duration: 1ms; }
 }
