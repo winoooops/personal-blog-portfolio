@@ -1,0 +1,88 @@
+---
+import './demo-tokens.css';
+
+interface Props {
+  eyebrow: string;
+  title: string;
+  source?: string;
+}
+
+const { eyebrow, title, source } = Astro.props;
+---
+
+<figure class="demo-frame">
+  <header class="demo-frame__head">
+    <div class="demo-frame__eyebrow">[ DEMO // {eyebrow} ]</div>
+    <h3 class="demo-frame__title">{title}</h3>
+  </header>
+  <div class="demo-frame__body">
+    <slot />
+  </div>
+  {source && (
+    <footer class="demo-frame__foot">
+      <a class="demo-frame__source" href={source} target="_blank" rel="noopener">View source ↗</a>
+    </footer>
+  )}
+</figure>
+
+<style>
+  .demo-frame {
+    margin: 40px 0;
+    padding: 16px;
+    background: var(--demo-bg);
+    border: 1px solid rgba(203, 166, 247, 0.18);
+    border-radius: var(--demo-radius-outer);
+    color: var(--demo-fg);
+    font-family: 'Inter', system-ui, sans-serif;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .demo-frame__head {
+    margin-bottom: 12px;
+    padding: 4px 4px 12px;
+    border-bottom: 1px solid rgba(203, 166, 247, 0.12);
+  }
+
+  .demo-frame__eyebrow {
+    font-family: var(--demo-mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--demo-fg-muted);
+    margin-bottom: 6px;
+  }
+
+  .demo-frame__title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--demo-fg);
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  .demo-frame__body {
+    background: var(--demo-surface);
+    border-radius: var(--demo-radius);
+    padding: 12px;
+    overflow: hidden;
+  }
+
+  .demo-frame__foot {
+    margin-top: 12px;
+    padding: 8px 4px 4px;
+    text-align: right;
+  }
+
+  .demo-frame__source {
+    font-family: var(--demo-mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--demo-fg-muted);
+    text-decoration: none;
+    transition: color var(--demo-duration) var(--demo-easing);
+  }
+
+  .demo-frame__source:hover { color: var(--demo-accent); }
+</style>

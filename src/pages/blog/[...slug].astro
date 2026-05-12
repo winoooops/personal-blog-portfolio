@@ -57,3 +57,9 @@ const formattedDate = post.data.date.toLocaleDateString('en', {
   <CodeBlocks />
   <ImageBlocks />
 </Base>
+
+<script>
+  // Boot the demo observer for any <DemoFrame>-wrapped demos
+  // embedded in this post. Lazy-loads each demo's bundle on scroll.
+  import '../../demos/shared/observe.ts';
+</script>

@@ -1,0 +1,181 @@
+/* motion-layout-dock — scoped styles.
+ * All selectors prefixed with .dock-demo to avoid bleeding into the post body. */
+
+.dock-demo {
+  font-family: var(--demo-mono);
+  color: var(--demo-fg);
+  font-size: 12px;
+}
+
+.dock-demo__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.dock-demo__btn {
+  font-family: var(--demo-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: lowercase;
+  background: var(--demo-surface-2);
+  color: var(--demo-fg-muted);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 7px 12px;
+  cursor: pointer;
+  transition:
+    background var(--demo-duration) var(--demo-easing),
+    color var(--demo-duration) var(--demo-easing),
+    border-color var(--demo-duration) var(--demo-easing);
+}
+
+.dock-demo__btn:hover {
+  color: var(--demo-fg);
+  border-color: rgba(203, 166, 247, 0.3);
+}
+
+.dock-demo__btn[aria-pressed="true"] {
+  background: var(--demo-accent);
+  color: var(--demo-bg);
+  border-color: var(--demo-accent);
+}
+
+.dock-demo__btn:focus-visible {
+  outline: 2px solid var(--demo-accent);
+  outline-offset: 2px;
+}
+
+.dock-demo__workspace {
+  display: grid;
+  gap: var(--demo-gap);
+  background: var(--demo-bg);
+  padding: var(--demo-gap);
+  border-radius: var(--demo-radius);
+  height: 320px;
+  overflow: hidden;
+}
+
+/* Four layout states. The data-dock attribute toggles which grid
+ * shape applies; both panes always live inside the same parent.
+ * The View Transitions API smooths the transition between them. */
+.dock-demo__workspace[data-dock="bottom"] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 96px;
+  grid-template-areas: "terminal" "dock";
+}
+.dock-demo__workspace[data-dock="top"] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 96px 1fr;
+  grid-template-areas: "dock" "terminal";
+}
+.dock-demo__workspace[data-dock="left"] {
+  grid-template-columns: 160px 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "dock terminal";
+}
+.dock-demo__workspace[data-dock="right"] {
+  grid-template-columns: 1fr 160px;
+  grid-template-rows: 1fr;
+  grid-template-areas: "terminal dock";
+}
+
+.dock-demo__pane {
+  background: var(--demo-surface);
+  border-radius: var(--demo-radius);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: inset 0 0 0 1px rgba(203, 166, 247, 0.12);
+  min-width: 0;
+  min-height: 0;
+}
+
+.dock-demo__pane--terminal {
+  grid-area: terminal;
+  /* Give Motion-like "shared identity" by naming the element.
+   * The View Transitions API pairs old + new snapshots by name and
+   * morphs position/size between them — the browser-native FLIP. */
+  view-transition-name: dock-demo-terminal;
+}
+
+.dock-demo__pane--dock {
+  grid-area: dock;
+  background: var(--demo-surface-2);
+  view-transition-name: dock-demo-dock;
+}
+
+.dock-demo__pane-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dock-demo__pane-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--demo-fg-muted);
+  flex-shrink: 0;
+}
+
+.dock-demo__pane-dot--accent { background: var(--demo-accent); }
+
+.dock-demo__pane-label {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  color: var(--demo-fg);
+}
+
+.dock-demo__pane-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dock-demo__bar {
+  height: 8px;
+  border-radius: 3px;
+  background: rgba(138, 130, 153, 0.22);
+}
+
+.dock-demo__caption {
+  margin-top: 12px;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--demo-fg-muted);
+  line-height: 1.5;
+}
+
+.dock-demo__caption-key {
+  font-family: var(--demo-mono);
+  font-size: 11px;
+  background: rgba(203, 166, 247, 0.12);
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: var(--demo-accent);
+}
+
+/* View Transitions: customize the cross-fade timing so it matches
+ * the site's motion language. Without these, the browser uses a
+ * 0.25s ease default. */
+::view-transition-old(dock-demo-terminal),
+::view-transition-new(dock-demo-terminal),
+::view-transition-old(dock-demo-dock),
+::view-transition-new(dock-demo-dock) {
+  animation-duration: var(--demo-duration);
+  animation-timing-function: var(--demo-easing);
+}
+
+/* Respect reduced-motion: cut the animation entirely. The new
+ * layout still applies, the transition just snaps. */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(dock-demo-terminal),
+  ::view-transition-new(dock-demo-terminal),
+  ::view-transition-old(dock-demo-dock),
+  ::view-transition-new(dock-demo-dock) {
+    animation-duration: 1ms;
+  }
+}

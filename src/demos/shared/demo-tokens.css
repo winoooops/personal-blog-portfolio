@@ -1,0 +1,22 @@
+/* Demos subsystem — design tokens.
+ * Imported by individual demos AND DemoFrame.astro.
+ * Intentionally distinct from src/styles/tokens.css so the demo's
+ * visual identity reads as "framed artifact" not "site chrome."
+ * See src/demos/DESIGN.md for the rationale. */
+
+.demo-frame,
+.demo-frame * {
+  --demo-bg: #0b0b18;
+  --demo-surface: #181827;
+  --demo-surface-2: #242438;
+  --demo-accent: #cba6f7;
+  --demo-accent-2: #a6e3a1;
+  --demo-fg: #e3e0f7;
+  --demo-fg-muted: #8a8299;
+  --demo-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', monospace;
+  --demo-radius: 8px;
+  --demo-radius-outer: 12px;
+  --demo-gap: 8px;
+  --demo-duration: 220ms;
+  --demo-easing: cubic-bezier(0.32, 0.72, 0, 1);
+}

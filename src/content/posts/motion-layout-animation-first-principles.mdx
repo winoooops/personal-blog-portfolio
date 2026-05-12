@@ -1,0 +1,313 @@
+---
+title: "A First-Principles Look at Motion's Layout Animation System"
+tag: Notes
+date: 2026-05-12
+readMin: 12
+featured: false
+dek: "Why layout transitions snap by default, how Motion (formerly Framer Motion) solves it, and the mental model for layout, layoutId, and AnimatePresence."
+source: obsidian
+obsidianPath: "winoooops/wiki/concepts/Shared Layout Animations"
+---
+import MotionLayoutDock from '../../demos/motion-layout-dock/index.astro';
+
+One underappreciated problem in modern UI development is not *getting* layouts to work — it is getting them to *transition* gracefully. This post is meant as an exploration of how Motion (formerly Framer Motion) approaches this, and why its mental model differs from both raw CSS and traditional animation libraries.
+
+## The Problem: Layout Changes Snap
+
+Consider a minimal example: a terminal panel and a dock that can switch between bottom and left positions.
+
+```tsx
+function DockDemo() {
+  const [dockPosition, setDockPosition] = useState<'bottom' | 'left'>('bottom')
+
+  return (
+    <div className={dockPosition === 'left' ? 'layout-left' : 'layout-bottom'}>
+      <div className="terminal">Terminal</div>
+      <div className="dock">Editor</div>
+    </div>
+  )
+}
+```
+
+This works, in the sense that the UI state is always correct. But the transition is abrupt: when `dockPosition` changes, React rerenders, CSS recalculates, and both the dock and terminal jump instantly to their new geometry.
+
+You *could* manually animate this with CSS transitions. But there is a catch:
+
+- You need to know which properties changed.
+- `height: auto` and grid/flex transitions are awkward at best.
+- Moving elements between different render positions requires non-trivial bookkeeping.
+- Entering and exiting elements need separate logic entirely.
+- Each additional layout state multiplies the animation complexity.
+
+The core issue: **layout and animation are conceptually coupled but mechanically separated** in most React+CSS architectures.
+
+## Motion's Answer: `motion.div`
+
+`motion.div` is, at its core, a normal `div` with Motion's animation props layered on top:
+
+```tsx
+import { motion } from 'framer-motion'
+
+function DockDemo() {
+  const [dockPosition, setDockPosition] = useState<'bottom' | 'left'>('bottom')
+
+  return (
+    <motion.div
+      layout
+      className={dockPosition === 'left' ? 'layout-left' : 'layout-bottom'}
+    >
+      <motion.div layout className="terminal">Terminal</motion.div>
+      <motion.div layout className="dock">Editor</motion.div>
+    </motion.div>
+  )
+}
+```
+
+The same React/CSS layout change still happens. But Motion measures the before and after bounding boxes and animates the difference. You still design the layout; Motion just makes the *transition* between layouts feel continuous.
+
+The browser now ships a native version of the same idea — the **View Transitions API** — which is what the live demo below uses. No animation library, no Motion, no React. Click a position; the dock and terminal morph between layouts because each pane has a `view-transition-name` set in CSS. The browser snapshots before + after, pairs same-named elements, and animates the difference. Motion does this with FLIP-in-JS; the View Transitions API does it natively.
+
+<MotionLayoutDock />
+
+## Keeping Animation Intent Local
+
+One arguably underappreciated benefit: Motion keeps animation intent visible where the UI structure is visible.
+
+With plain CSS, animation behavior is typically split across:
+
+1. React component structure
+2. CSS classes
+3. Keyframes
+4. Transition rules
+5. Conditional class names
+
+This fragmentation makes it hard to predict what will animate just by reading the component. Motion inverts this:
+
+```tsx
+<AnimatedCircle layoutId="circle-1" />
+
+<AnimatePresence>
+  <motion.div
+    key="divider"
+    initial={{ opacity: 0, filter: 'blur(4px)' }}
+    animate={{ opacity: 1, filter: 'blur(0px)' }}
+    exit={{ opacity: 0, filter: 'blur(4px)' }}
+  >
+    <ArrowMarquee arrowCount={8} />
+  </motion.div>
+</AnimatePresence>
+
+<AnimatedCircle layoutId="circle-2" />
+```
+
+Reading this component tells you:
+
+- The circles are **shared-layout elements** (`layoutId`).
+- The divider enters and exits (`AnimatePresence`).
+- The divider fades and blurs (`initial`/`animate`/`exit` are explicit).
+- Nothing is hidden in a separate CSS file.
+
+This feels similar to Tailwind's benefit: instead of jumping between files, the component gives you a local, complete picture of both structure and behavior.
+
+## `layout` vs `layoutId`: Two Different Jobs
+
+These props are related but solve distinct problems:
+
+| Prop | Purpose |
+|------|---------|
+| `layout` | Animate this element's layout changes |
+| `layoutId` | Preserve visual identity across different render locations |
+
+`layout` tells Motion: *"Watch this element's old position/size and its new position/size. If React or CSS moves or resizes it, animate between those two boxes."*
+
+`layoutId` is not mainly about preventing React rerenders — React still rerenders normally. Instead, it tells Motion: *"These elements from different renders should feel like the same visual object."*
+
+Example:
+
+```tsx
+{dockPosition === 'bottom' && (
+  <motion.div layout layoutId="dock" />
+)}
+
+{dockPosition === 'left' && (
+  <motion.div layout layoutId="dock" />
+)}
+```
+
+React sees two conditional render locations. Motion sees the same `layoutId="dock"` and animates the dock from its old bottom rectangle to its new left rectangle.
+
+**The actual layout is still the developer's job.** Motion does not decide where things go. Developers still choose:
+
+- CSS grid vs. flex
+- Position, visibility, render order
+- Width, height, state shape
+- Which components mount or unmount
+
+Motion only smooths the transition between the layouts you create.
+
+## The Core Mechanism
+
+The UI does not manually animate every pixel. Instead:
+
+1. React state changes the layout.
+2. CSS recalculates new positions.
+3. Motion measures the delta and animates it.
+
+In this project, three values drive all rearrangement:
+
+```tsx
+const [layoutId, setLayoutId] = useState<LayoutId>('threeRight')
+const [drawerMode, setDrawerMode] = useState<DrawerMode>('editor')
+const [dockPosition, setDockPosition] = useState<DockPosition>('bottom')
+```
+
+Buttons update these values. The JSX renders a different layout. Motion handles the rest.
+
+## `AnimatePresence`: Handling Mount/Unmount
+
+`AnimatePresence` is used when elements are added or removed from React's tree. In this demo, switching from `quad` to `single` removes terminal panes. `AnimatePresence` lets removed panes run an `exit` animation before leaving the DOM:
+
+```tsx
+<AnimatePresence initial={false}>
+  {layout.panes.map((pane) => (
+    <motion.div
+      key={pane}
+      layout
+      initial={{ opacity: 0, scale: 0.96 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.96 }}
+    />
+  ))}
+</AnimatePresence>
+```
+
+## The Pattern
+
+The whole demo follows a consistent pattern:
+
+1. Store layout state in React.
+2. Render different CSS grid/flex layouts from that state.
+3. Put `layout` on the important boxes.
+4. Use `layoutId` when one visual object should move between places.
+5. Use `AnimatePresence` when elements are conditionally mounted/unmounted.
+
+## Rule of Thumb
+
+| Scenario | Prop |
+|----------|------|
+| Same element, new size or position | `layout` |
+| Same visual object, different render location | `layoutId` |
+| Element entering or exiting the tree | `AnimatePresence` |
+
+## Demo Walkthrough
+
+This project is a small Vimeflow layout playground. The important state lives at the top of `page.tsx`:
+
+```tsx
+const [layoutId, setLayoutId] = useState<LayoutId>('threeRight')
+const [drawerMode, setDrawerMode] = useState<DrawerMode>('editor')
+const [dockPosition, setDockPosition] = useState<DockPosition>('bottom')
+```
+
+These control:
+
+- **`layoutId`**: Terminal split — `single`, `vsplit`, `hsplit`, `threeRight`, `quad`
+- **`dockPosition`**: Editor/diff dock position — `hidden`, `bottom`, `left`, `right`, `top`
+- **`drawerMode`**: Dock content — `editor` or `diff`
+
+### Workspace Wrapper
+
+```tsx
+<motion.div layout>
+```
+
+This tells Motion to animate the workspace when its layout changes.
+
+### Terminal and Dock Arrangement
+
+`DockedTerminalLayout` decides the big structural layout:
+
+```tsx
+const isHorizontalDock = dockPosition === 'left' || dockPosition === 'right'
+const isReverse = dockPosition === 'left' || dockPosition === 'top'
+```
+
+Render order matters:
+
+```tsx
+{hasDock && isReverse && <DockSurface />}
+<TerminalGrid />
+{hasDock && !isReverse && <DockSurface />}
+```
+
+So `left`/`top` render the dock before the terminal; `right`/`bottom` render it after. This is normal React layout logic. Motion only animates the change.
+
+### Terminal Grid
+
+Each terminal pane uses:
+
+```tsx
+<motion.div layout layoutId={`terminal-pane-${pane}`}>
+```
+
+- `layout` animates grid cell changes.
+- `layoutId` treats `Claude`, `Codex`, `Tests`, etc. as the same visual pane across layout changes.
+
+### Dock Surface
+
+```tsx
+<motion.div layout layoutId={`${scope}-dock`}>
+```
+
+This is the key object that moves around the terminal. `layoutId` keeps it visually continuous when it shifts between bottom, left, right, and top.
+
+The dock size is controlled with Motion's `animate` prop:
+
+```tsx
+animate={{
+  width: isSideDock ? 360 : '100%',
+  height: isSideDock ? '100%' : 380,
+}}
+```
+
+### Editor/Diff Content
+
+```tsx
+<AnimatePresence initial={false}>
+  <motion.div
+    key={mode}
+    layout
+    layoutId={`${scope}-drawer-surface`}
+    initial={{ opacity: 0, y: 8 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -8 }}
+  />
+</AnimatePresence>
+```
+
+`key={mode}` means `editor` and `diff` are distinct rendered contents. `AnimatePresence` lets the old content animate out while the new content animates in.
+
+## Two Kinds of Animation
+
+This demo illustrates two distinct animation categories:
+
+1. **Layout animation**: `layout` and `layoutId` animate panes and dock movement.
+2. **Presence animation**: `AnimatePresence` animates content entering and exiting.
+
+The full flow:
+
+```
+Buttons change state
+    ↓
+State changes CSS grid/flex layout
+    ↓
+motion.div layout animates the box changes
+    ↓
+layoutId keeps visual identity across positions
+    ↓
+AnimatePresence handles things entering/exiting
+```
+
+---
+
+*Source idea: [How I Use Shared Layout Animations](https://jakub.kr/work/shared-layout-animations) by Jakub.*
