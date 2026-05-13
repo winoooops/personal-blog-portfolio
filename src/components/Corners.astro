@@ -1,5 +1,6 @@
 ---
 import Menu from './Menu.astro';
+import BgmToggle from './BgmToggle.astro';
 ---
 
 <div class="corner tl">
@@ -9,7 +10,10 @@ import Menu from './Menu.astro';
 </div>
 
 <div class="corner tr">
-  <Menu />
+  <div class="tr-controls">
+    <BgmToggle />
+    <Menu />
+  </div>
 </div>
 
 <div class="corner bl">
@@ -35,6 +39,7 @@ import Menu from './Menu.astro';
   .tl { top: 52px; left: 56px; }
   .bl { bottom: 52px; left: 56px; color: var(--gold-soft); }
   .tr { top: 52px; right: 80px; }
+  .tr-controls { display: flex; align-items: center; gap: 14px; }
   .br { bottom: 52px; right: 56px; color: var(--gold-soft); }
 
   .corner .label {

@@ -1,0 +1,133 @@
+---
+import { withBase } from '../lib/paths';
+
+const src = withBase('/audio/duduk-drone.mp3');
+---
+
+<div class="bgm-wrap" data-bgm>
+  <button
+    class="bgm-btn"
+    type="button"
+    aria-label="Play background music"
+    aria-pressed="false"
+    data-bgm-btn
+  >
+    <svg class="bgm-icon bgm-icon-play" viewBox="0 0 12 14" aria-hidden="true">
+      <path d="M0 0 L12 7 L0 14 Z" fill="currentColor" />
+    </svg>
+    <span class="bgm-bars" aria-hidden="true">
+      <span></span>
+      <span></span>
+      <span></span>
+    </span>
+  </button>
+  <audio data-bgm-audio src={src} loop preload="none"></audio>
+</div>
+
+<style>
+  .bgm-wrap { position: relative; }
+
+  @media (max-width: 1023px) {
+    .bgm-wrap { display: none; }
+  }
+
+  .bgm-btn {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: none;
+    color: var(--gold-soft);
+    transition: color 0.25s ease;
+  }
+
+  .bgm-btn:hover,
+  .bgm-wrap.is-on .bgm-btn { color: var(--gold); }
+
+  .bgm-icon {
+    width: 11px;
+    height: 13px;
+    display: block;
+  }
+
+  .bgm-bars {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 14px;
+  }
+  .bgm-bars > span {
+    width: 2px;
+    height: 5px;
+    background: currentColor;
+    display: block;
+  }
+
+  .bgm-wrap.is-on .bgm-icon-play { display: none; }
+  .bgm-wrap.is-on .bgm-bars { display: flex; }
+  .bgm-wrap.is-on .bgm-bars > span {
+    animation: bgmPulse 0.9s ease-in-out infinite;
+  }
+  .bgm-wrap.is-on .bgm-bars > span:nth-child(1) { animation-delay: 0s; }
+  .bgm-wrap.is-on .bgm-bars > span:nth-child(2) { animation-delay: 0.15s; }
+  .bgm-wrap.is-on .bgm-bars > span:nth-child(3) { animation-delay: 0.3s; }
+
+  @keyframes bgmPulse {
+    0%, 100% { height: 5px; }
+    50% { height: 13px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bgm-wrap.is-on .bgm-bars > span {
+      animation: none;
+      height: 11px;
+    }
+  }
+</style>
+
+<script>
+  (function setupBgm() {
+    const wrap = document.querySelector<HTMLElement>('[data-bgm]');
+    const btn = document.querySelector<HTMLButtonElement>('[data-bgm-btn]');
+    const audio = document.querySelector<HTMLAudioElement>('[data-bgm-audio]');
+    if (!wrap || !btn || !audio) return;
+
+    audio.volume = 0.3;
+
+    function paint(on: boolean) {
+      wrap!.classList.toggle('is-on', on);
+      btn!.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn!.setAttribute('aria-label', on ? 'Pause background music' : 'Play background music');
+    }
+
+    async function enable() {
+      paint(true);
+      try {
+        await audio!.play();
+        localStorage.setItem('bgm', 'on');
+      } catch {
+        paint(false);
+      }
+    }
+
+    function disable() {
+      paint(false);
+      audio!.pause();
+      localStorage.setItem('bgm', 'off');
+    }
+
+    btn.addEventListener('click', () => {
+      if (wrap!.classList.contains('is-on')) disable();
+      else enable();
+    });
+
+    if (localStorage.getItem('bgm') === 'on') {
+      void enable();
+    }
+  })();
+</script>
