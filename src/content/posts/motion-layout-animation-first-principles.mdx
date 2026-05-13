@@ -216,7 +216,7 @@ These control:
 - **`dockPosition`**: Editor/diff dock position — `hidden`, `bottom`, `left`, `right`, `top`
 - **`drawerMode`**: Dock content — `editor` or `diff`
 
-Here is the same skeleton — rebuilt in vanilla TypeScript with the View Transitions API instead of Motion. Cycle the **Pane layout** and **Dock** controls and watch how panes morph between grid areas. Each pane carries its own `view-transition-name`, so the browser pairs old and new snapshots the same way `layoutId` does in Motion.
+Here is the same skeleton running inline. Cycle the **Pane layout** and **Dock** controls and watch how panes morph between grid areas. Each pane carries its own `layoutId`, so Motion pairs old and new positions across layouts and animates the box delta.
 
 <VimeflowWorkspace />
 
