@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { profile } from '../data/profile';
 import { withBase } from '../lib/paths';
+import { ViewTransitions } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -25,7 +26,23 @@ const pageTitle = title === profile.name ? title : `${title} | ${profile.name}`;
     <link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
     <link rel="icon" href={withBase('/favicon.ico')} />
     <title>{pageTitle}</title>
+    <ViewTransitions />
+    <style is:global>
+      ::view-transition-old(root),
+      ::view-transition-new(root) {
+        animation-duration: 220ms;
+        animation-timing-function: ease-in-out;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+          animation-duration: 0.01ms;
+        }
+      }
+    </style>
   </head>
+
   <body>
     <header class="site-header">
       <a class="brand" href={withBase('/')}>{profile.name}</a>
