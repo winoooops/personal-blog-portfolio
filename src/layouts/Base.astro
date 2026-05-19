@@ -95,6 +95,8 @@ const {
         try {
           const url = new URL(href, location.href);
           if (url.origin !== location.origin) return;
+          // Same-document hash jump fires no DOMContentLoaded — overlay would get stuck.
+          if (url.pathname === location.pathname && url.search === location.search) return;
         } catch { return; }
         overlay.style.transition = 'opacity 0.2s ease';
         overlay.style.opacity = '1';
